@@ -29,14 +29,14 @@ import edu.wpi.first.wpilibj.Gyro;
  * The robot has no motion in the z direction (i.e. no bumps), roller friction is
  * insignificant, and all wheel axes lie in the same horizontal plane.
  * 
- * To use: Construct and object of the class, with or without the Gyro, depending
+ * To use: Construct an object of the class, with or without the Gyro, depending
  * on whether the driving should be robot-centric or field-centric.  Then, add 
  * wheels with or without encoders, and call the init() method to begin.  Use the
  * drive method to specify the robot's velocity in the field coordinate system.
  * 
  * @author Mark Macerato
  */
-public class HolonomicDriveII {
+public class HolonomicDrive {
     
     private WheelCollection wheels;
     private final Gyro gyro;
@@ -55,7 +55,7 @@ public class HolonomicDriveII {
      * @param gyro  The robot's gyroscope
      * @param frequency The frequency at which the control loop is closed
      */
-    public HolonomicDriveII(Gyro gyro, double frequency) 
+    public HolonomicDrive(Gyro gyro, double frequency) 
     {
         this.gyro = gyro;
         this.frequency = frequency;
@@ -70,7 +70,7 @@ public class HolonomicDriveII {
      * 
      * @param frequency The frequency at which the control loop is closed
      */
-    public HolonomicDriveII(double frequency) 
+    public HolonomicDrive(double frequency) 
     {
         // No gyro is needed here
         gyro = null;
