@@ -2,6 +2,8 @@
 package org.usfirst.frc.team3167.robot;
 
 import edu.wpi.first.wpilibj.IterativeRobot;
+import edu.wpi.first.wpilibj.Gyro;
+import org.usfirst.frc.team3167.drive.HolonomicDrive;
 import edu.wpi.first.wpilibj.Jaguar;
 import edu.wpi.first.wpilibj.Joystick;
 
@@ -14,9 +16,10 @@ import edu.wpi.first.wpilibj.Joystick;
  */
 public class Robot extends IterativeRobot 
 {
-	
-	private Jaguar testJag;
-	private Joystick stick;
+
+    private Gyro gyro;
+    private HolonomicDrive driveField;
+    private HolonomicDrive driveRobot;
 		
     /**
      * This function is run when the robot is first started up and should be
@@ -24,9 +27,31 @@ public class Robot extends IterativeRobot
      */
     public void robotInit() 
     {
-		testJag = new Jaguar(4);
-		stick = new Joystick(1);
+        gyro = new Gyro(Config.gyroChannel);
+        driveField = new HolonomicDrive(Config.frequency, gyro);
+        driveRobot = new HolonomicDrive(Config.frequency);
+        
+        initHolonomicDrive();
     }
+    
+    /**
+     * Function to initialize the holonomic drive train class
+     */ 
+     private void initHolonomicDrive(HolonomicDrive drive)
+     {
+         // Add front left wheel
+         drive.addWheel(Config.frontLeftX, Config.frontLeftY, 0.0, 45.0, Config.frontLeftCh, Config.frontleftEncChA, 
+             Config.frontLeftEncB, false, Config.encPulsesPerRev, 1.0, );
+         
+         // Add front right wheel
+	 drive.addWheel();
+	 
+	 // Add back left wheel
+	 drive.addWheel();
+	 
+	 // Add back right wheel
+	 drive.addWheel();
+     }
 
     /**
      * This function is called periodically during autonomous
@@ -40,7 +65,7 @@ public class Robot extends IterativeRobot
      */
     public void teleopPeriodic() 
     {
-        testJag.set(-stick.getY());
+    	
     }
     
     /**
