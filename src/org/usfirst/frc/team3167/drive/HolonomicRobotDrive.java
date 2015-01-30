@@ -6,7 +6,7 @@
 *******************************************************************************/
 
 // Declare our package
-package judge.drive;
+package org.usfirst.frc.drive;
 
 // WPI imports
 import edu.wpi.first.wpilibj.Joystick;
