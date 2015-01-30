@@ -12,6 +12,20 @@ struct RobotKinematicData
 	double x;// [in] or [in/sec]
 	double y;// [in] or [in/sec]
 	double theta;// [rad] or [rad/sec]
+	
+	inline RobotKinematicData& operator/=(const double &d)
+	{
+		x /= d;
+		y /= d;
+		theta /= d;
+	}
+	
+	inline RobotKinematicData operator/(const double &d) const
+	{
+		RobotKinematicData k(*this);
+		k /= d;
+		return k;
+	}
 };
 
 enum TargetLockType
