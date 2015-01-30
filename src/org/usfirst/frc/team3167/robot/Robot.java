@@ -17,60 +17,15 @@ import edu.wpi.first.wpilibj.Joystick;
 public class Robot extends IterativeRobot 
 {
 
-    private Gyro gyro;
-    private HolonomicDrive driveField;
-    private HolonomicDrive driveRobot;
-    private Joystick driver;
-		
     /**
      * This function is run when the robot is first started up and should be
      * used for any initialization code.
      */
     public void robotInit() 
     {
-        gyro = new Gyro(Config.gyroChannel);
-        driveField = new HolonomicDrive(Config.frequency, gyro);
-        driveRobot = new HolonomicDrive(Config.frequency);
-        driver = new Joystick(Config.joystickPort);
-        
-        initHolonomicDrive();
+
     }
     
-    /**
-     * Function to initialize the holonomic drive train class
-     */ 
-     private void initHolonomicDrive(HolonomicDrive drive)
-     {
-         // Add front left wheel
-         drive.addWheel(Config.frontLeftX, Config.frontLeftY, 0.0, 45.0, Config.frontLeftCh, Config.frontleftEncChA, 
-             Config.frontLeftEncB, false, Config.encPulsesPerRev, 1.0, Config.radius, Config.maxRotation, Config.frequency,
-             Config.frontLeftKp, Config.frontLeftKi, Config.frontLeftKd, Config.maxIntegral, 1.0, Config.cutoff);
-         
-         // Add front right wheel
-	 drive.addWheel(Config.frontRightX, Config.frontRightY, 0.0, 135.0, Config.frontRightCh, Config.frontRightEncChA, 
-             Config.frontRightEncB, false, Config.encPulsesPerRev, 1.0, Config.radius, Config.maxRotation, Config.frequency,
-             Config.frontRightKp, Config.frontRightKi, Config.frontRightKd, Config.maxIntegral, 1.0, Config.cutoff);
-	 
-	 // Add back right wheel
-	 drive.addWheel(Config.backRightX, Config.backRightY, 0.0, 45.0, Config.backRightCh, Config.radius, 
-	     Config.maxRotation);
-	 
-	 // Add back left wheel
-	 drive.addWheel(Config.backLeftX, Config.backLeftY, 0.0, 135.0, Config.backLeftCh, Config.radius, 
-	     Config.maxRotation);
-             
-        // Call the init method
-        try
-        {
-            drive.init();
-        }
-        catch (Exception e)
-        {
-            e.printStackTrace();
-            System.err.println("Holonomic Drive initialization has failed!");
-        }
-     }
-
     /**
      * This function is called periodically during autonomous
      */
@@ -83,16 +38,7 @@ public class Robot extends IterativeRobot
      */
     public void teleopPeriodic() 
     {
-    	// Drive the robot based off of joystick readings
-    	try
-    	{
-            drive.drive(driver.getX() * Config.maxVel, -driver.getY() * Config.mayVel, driver.getTwist * Config.maxRotationSpeed);
-    	}
-    	catch(Exception e)
-    	{
-    	    e.printStackTrace();
-    	    System.err.println("The drive train is not responsive!");
-    	}
+
     }
     
     /**
