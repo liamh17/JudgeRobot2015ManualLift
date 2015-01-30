@@ -7,7 +7,7 @@
 *******************************************************************************/
 
 // Declare our package
-package judge.util;
+package org.usfirst.frc.team3167.util;
 
 /**
  * Standard discrete-time second-order low-pass filter.
