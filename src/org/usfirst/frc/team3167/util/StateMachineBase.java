@@ -1,72 +1,87 @@
 /*******************************************************************************
 * File:  StateMachineBase.java
-* Date:  1/7/2014
-* Auth:  Mark Macerato
-* Desc:  Abstract base class for state machines
+* Date:  4/4/2011
+* Auth:  K. Loux
+* Desc:  Base class for creating state machines.
 *******************************************************************************/
 
+// Declare our package
+package org.usfirst.frc.util;
+
 /**
- * Abstract base class for state machines 
- * 
- * @author Mark Macerato
+ * Base class for creating state machines.  Handles state transitions and
+ * provides the option of overriding state entry, processing and exit methods.
+ *
+ * @author K. Loux
  */
 public abstract class StateMachineBase
 {
-    // Fields
-    private byte state = -1; // -1 denotes the 'off' state, nothing has happened yet
-    private byte nextState = 0; // the next state that the machine should advance to
-     
+    private byte state = -1;// Initialize to something different than nextState
+    private byte nextState = 0;// Assume initial state has value zero
+
     // Methods
-     
     /**
-     * Perform any tasks that the machine should be doing in its current
-     * state.  Override this method with a switch statement based off of the
-     * state, with each case containing the code to be executed if the robot
-     * if in that state
+     * Performs actions required on entry to current state.
      */
-    protected abstract void executeStateTasks();
-     
-    /**
-     * Perform any tasks which should occur only once when entering a given state. Override 
-     * in the same manner as executeState(). Abstract method must be overriden in subclass.
-     */
-    protected abstract void enterState();
-      
-    /**
-    * Perform any tasks which should occur only once when exiting a given state. Override 
-    * in the same manner as executeState(). Abstract method must be overriden in subclass.
-    */
-    protected abstract void exitState();
-      
-    /**
-     * Run the state machine
-     */
-    public final void execute()
+    protected void EnterState()
     {
-        if(state != nextState)
+        // Nothing required by default
+    }
+
+    /**
+     * Handles normal state actions (not transitions).
+     */
+    protected void ProcessState()
+    {
+        // Nothing required by default
+    }
+
+    /**
+     * Performs actions required on exit of current state.
+     */
+    protected void ExitState()
+    {
+        // Nothing required by default
+    }
+
+	/**
+	 * Main method to be called from outside objects, automatically handles
+	 * state transitions and calls the ProcessState() method for the current
+	 * state.
+	 */
+    public final void Process()
+    {
+        // Check the current state against the next state to see if the state
+        // changed
+        if (state != nextState)
         {
-          exitState();
-          state = nextState;
-          enterState();
+            ExitState();
+            state = nextState;
+            EnterState();
         }
-        executeStateTasks();
+
+        // Do normal processing of the current state
+        ProcessState();
     }
-      
-    /**
-     * Return the current state  
-     */
-    protected byte getState()
-    {
-        return state;
-    }
-      
-     /**
-      * Manually set the next state
-      * 
-      * @param nextState   The value assigned to the next state
-      */
-    protected final void setState(byte nextState)
-    {
-        this.nextState = nextState;
-    }
+
+	/**
+	 * Returns the byte representing the current state.
+	 *
+	 * @return Current state
+	 */
+	protected final byte GetState()
+	{
+		return state;
+	}
+
+	/**
+	 * Sets the next state for the state machine (takes effect on next call of
+	 * Proces()).
+	 *
+	 * @param _nextState Machine's next state
+	 */
+	protected final void SetNextState(byte _nextState)
+	{
+		nextState = _nextState;
+	}
 }
