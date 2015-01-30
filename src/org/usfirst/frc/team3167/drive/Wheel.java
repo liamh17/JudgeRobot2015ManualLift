@@ -8,7 +8,7 @@
 *******************************************************************************/
 
 // Declare our package
-package org.usfirst.frc.util;
+package org.usfirst.frc.drive;
 
 // WPI imports
 import edu.wpi.first.wpilibj.MotorSafety;
