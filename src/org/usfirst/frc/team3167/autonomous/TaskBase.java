@@ -6,10 +6,10 @@
 *******************************************************************************/
 
 // Declare our package
-package org.usfirst.frc.drive;
+package org.usfirst.frc.team3167.autonomous;
 
 // Local imports
-import judge.util.StateMachineBase;
+import org.usfirst.frc.team3167.util.StateMachineBase;
 
 /**
  * Abstract base class for creating robot tasks.

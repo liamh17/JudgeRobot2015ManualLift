@@ -3,9 +3,10 @@ package org.usfirst.frc.team3167.robot;
 
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Gyro;
-import org.usfirst.frc.team3167.drive.HolonomicDrive;
 import edu.wpi.first.wpilibj.Jaguar;
 import edu.wpi.first.wpilibj.Joystick;
+
+import org.usfirst.frc.team3167.drive.HolonomicRobotDrive;
 
 /**
  * The VM is configured to automatically run this class, and to call the

@@ -12,7 +12,7 @@
 *******************************************************************************/
 
 // Declare our package
-package org.usfirst.frc.util;
+package org.usfirst.frc.team3167.util;
 
 /**
  * PID Controller object with anti-windup mechanisms.  To be used for closing

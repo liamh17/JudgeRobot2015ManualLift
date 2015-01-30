@@ -6,7 +6,7 @@
 *******************************************************************************/
 
 // Declare our package
-package org.usfirst.frc.util;
+package org.usfirst.frc.team3167.util;
 
 /**
  * Base class for creating state machines.  Handles state transitions and

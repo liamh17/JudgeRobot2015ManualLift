@@ -7,7 +7,7 @@
 *******************************************************************************/
 
 // Declare our package
-package org.usfirst.frc.drive;
+package org.usfirst.frc.team3167.drive;
 
 /**
  * Variable size list of wheel objects.

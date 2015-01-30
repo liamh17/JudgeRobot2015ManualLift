@@ -6,19 +6,19 @@
 *******************************************************************************/
 
 // Declare our package
-package org.usfirst.frc.drive;
+package org.usfirst.frc.team3167.drive;
 
 // WPI imports
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.ADXL345_I2C;
 
 // Judge imports
-import judge.math.Matrix;
-import judge.util.SecondOrderLimiter;
-import judge.util.DSPlotDataBuffer;
-import judge.util.PIDControllerII;
+import org.usfirst.frc.team3167.util.Matrix;
+import org.usfirst.frc.team3167.util.SecondOrderLimiter;
+import org.usfirst.frc.team3167.util.PIDControllerII;
+import org.usfirst.frc.team3167.robot.RobotConfiguration;
 import judge.sensors.RateGyro;
-import judge.RobotConfiguration;
+import judge.util.DSPlotDataBuffer;
 
 /**
  * Holonomic drive class for use with independently driven mecanum or omni
@@ -84,11 +84,14 @@ public class HolonomicRobotDrive
 	private Matrix predictedRobotVelocity = new Matrix(3,1);
 
 	// Robot navigation object
-    private Navigator navigator;
+    //private Navigator navigator;
 
 	// Buffer for plotting data on the dashboard
-	private DSPlotDataBuffer dsBuffer;
+	//private DSPlotDataBuffer dsBuffer;
 
+	// Mark - I don't think this is where I would put this stuff.  We should separate the
+	// holonomic drive stuff from the robot velocity control stuff.  I would put this
+	// In the velocity control class a level up from this.
 	private PIDControllerII yawController = new PIDControllerII(
 			RobotConfiguration.yawKp,
 			RobotConfiguration.yawKi,
@@ -638,7 +641,7 @@ public class HolonomicRobotDrive
 
 		// If we have a means of sending data to the driver station, update
 		// the buffer
-		if (dsBuffer != null)
+		/*if (dsBuffer != null)
 		{
 			for (i = 0; i < dsBuffer.Size(); i++)
 			{
@@ -655,7 +658,7 @@ public class HolonomicRobotDrive
 					dsBuffer.SetData(i, (float)
 							measuredWheelVelocity.GetElement(i / 2, 0));
 			}
-		}
+		}*/
     }
 
     /**
@@ -847,10 +850,10 @@ public class HolonomicRobotDrive
 	 * @param buffer Buffer storing the information to be sent to the driver's
 	 * station
 	 */
-	public void SetDSBuffer(DSPlotDataBuffer buffer)
+	/*public void SetDSBuffer(DSPlotDataBuffer buffer)
 	{
 		dsBuffer = buffer;
-	}
+	}*/
 
     /**
 	 * Rescales the velocity command vector so that no velocity exceeds the
@@ -910,7 +913,7 @@ public class HolonomicRobotDrive
         for (i = 0; i < wheelList.Size(); i++)
             wheelList.Get(i).ResetController();
 
-		SetPosition(0.0, 0.0, 0.0);
+		//SetPosition(0.0, 0.0, 0.0);
     }
 
 	/**
@@ -920,7 +923,7 @@ public class HolonomicRobotDrive
 	 * @param y		Y-position [in]
 	 * @param theta	Theta position [deg]
 	 */
-	public void SetPosition(double x, double y, double theta)
+	/*public void SetPosition(double x, double y, double theta)
 	{
 		navigator.SetPosition(x, y, theta);
 	}
@@ -930,7 +933,7 @@ public class HolonomicRobotDrive
 	 *
 	 * @return Estimated X position [in]
 	 */
-	public double GetXPosition()
+	/*public double GetXPosition()
 	{
 		return navigator.GetX();
 	}
@@ -940,7 +943,7 @@ public class HolonomicRobotDrive
 	 *
 	 * @return Estimated Y position [in]
 	 */
-	public double GetYPosition()
+	/*public double GetYPosition()
 	{
 		return navigator.GetY();
 	}
@@ -950,7 +953,7 @@ public class HolonomicRobotDrive
 	 *
 	 * @return Estimated theta [deg]
 	 */
-	public double GetThetaPosition()
+	/*public double GetThetaPosition()
 	{
 		return navigator.GetTheta();
 	}
@@ -963,7 +966,7 @@ public class HolonomicRobotDrive
 	 *
 	 * @return True if the robot is near the wall, false otherwise
 	 */
-    public boolean IsNearWall(double distance)
+    /*public boolean IsNearWall(double distance)
     {
         double leftDistance = navigator.GetLeftFront();
         double rightDistance = navigator.GetRightFront();
@@ -988,7 +991,7 @@ public class HolonomicRobotDrive
 	 * @return True if the robot is perpendicular to the wall in front of it,
 	 * false otherwise
 	 */
-    public boolean IsSquareToWall(double tol)
+    /*public boolean IsSquareToWall(double tol)
     {
         if (Math.abs(GetIRAngle()) < tol)
             return true;
@@ -1008,7 +1011,7 @@ public class HolonomicRobotDrive
 	 */
 	// Returns the angle of the robot relative to the wall in front of it in
 	// degrees
-	public double GetIRAngle() throws IllegalStateException
+	/*public double GetIRAngle() throws IllegalStateException
 	{
 		double sensorSpacing = 21.0;// [in]
         double leftDistance = navigator.GetLeftFront();
@@ -1018,7 +1021,7 @@ public class HolonomicRobotDrive
 					"Illegal value returned from IR sensor");
 
 		// Compute and return the angle in degrees
-        return com.sun.squawk.util.MathUtils.atan(
+        return Math.atan(
                 (leftDistance - rightDistance)
                 / sensorSpacing) * 180.0 / Math.PI;
 	}
@@ -1028,7 +1031,7 @@ public class HolonomicRobotDrive
 	 *
 	 * @return Reading from the left front IR distance sensor [in]
 	 */
-    public double GetLeftFrontIRDistance()
+    /*public double GetLeftFrontIRDistance()
     {
         return navigator.GetLeftFront();
     }
@@ -1038,7 +1041,7 @@ public class HolonomicRobotDrive
 	 *
 	 * @return Reading from the right front IR distance sensor [in]
 	 */
-    public double GetRightFrontIRDistance()
+    /*public double GetRightFrontIRDistance()
     {
         return navigator.GetRightFront();
     }
@@ -1048,7 +1051,7 @@ public class HolonomicRobotDrive
 	 *
 	 * @return Reading from the left rear IR distance sensor [in]
 	 */
-	public double GetLeftRearIRDistance()
+	/*public double GetLeftRearIRDistance()
 	{
 		return navigator.GetLeftRear();
 	}
@@ -1058,7 +1061,7 @@ public class HolonomicRobotDrive
 	 *
 	 * @return Reading from the right rear IR distance sensor [in]
 	 */
-	public double GetRightRearIRDistance()
+	/*public double GetRightRearIRDistance()
 	{
 		return navigator.GetRightRear();
 	}
@@ -1066,7 +1069,7 @@ public class HolonomicRobotDrive
 	/**
 	 * Prints the current position estimate to the console for debugging.
 	 */
-    public void PrintPosition()
+    /*public void PrintPosition()
     {
         System.out.println("x: " + navigator.GetX() + "  y: "
                 + navigator.GetY() + "  theta: " + navigator.GetTheta());

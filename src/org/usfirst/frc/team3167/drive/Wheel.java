@@ -8,7 +8,7 @@
 *******************************************************************************/
 
 // Declare our package
-package org.usfirst.frc.drive;
+package org.usfirst.frc.team3167.drive;
 
 // WPI imports
 import edu.wpi.first.wpilibj.MotorSafety;
@@ -17,8 +17,8 @@ import edu.wpi.first.wpilibj.Jaguar;
 import edu.wpi.first.wpilibj.Encoder;
 
 // Judge imports
-import judge.util.PIDControllerII;
-import judge.util.SecondOrderFilter;
+import org.usfirst.frc.team3167.util.PIDControllerII;
+import org.usfirst.frc.team3167.util.SecondOrderFilter;
 
 /**
  * Class representing the drivetrain from one motor to a wheel (or wheels).
@@ -67,7 +67,7 @@ public class Wheel implements MotorSafety
 	private final double maxRotationRate;// [rad/sec at the wheel]
 
     // The encoder object
-    private Encoder encoder;
+    private Encoder encoder;// TODO:  If we use CAN, this will change!
     private double wheelVelocity;// [rad/sec at the wheel]
 	private double lastPosition;// [rad]
 	private SecondOrderFilter rateFilter;
@@ -203,7 +203,7 @@ public class Wheel implements MotorSafety
         encoder.setDistancePerPulse(2.0 * Math.PI / encPPR / gearRatio);// Disance in rad at wheel
         //encoder.setMaxPeriod(60.0 / (5.0 * encPPR));// Based on 5 motor RPM
         encoder.reset();
-        encoder.start();
+        //encoder.start();
 
         // Create controller object
         controller = new PIDControllerII(Kp, Ki, queueSize, freq);
@@ -290,7 +290,7 @@ public class Wheel implements MotorSafety
         encoder.setDistancePerPulse(2.0 * Math.PI / encPPR / gearRatio);// Disance in rad at wheel
         //encoder.setMaxPeriod(60.0 / (5.0 * encPPR));// Based on 5 motor RPM
         encoder.reset();
-        encoder.start();
+        //encoder.start();
 
         // Create controller object
         controller = new PIDControllerII(Kp, Ki, saturation, freq);
@@ -378,7 +378,7 @@ public class Wheel implements MotorSafety
         encoder.setDistancePerPulse(2.0 * Math.PI / encPPR / gearRatio);// Disance in rad at wheel
         //encoder.setMaxPeriod(60.0 / (5.0 * encPPR));// Based on 5 motor RPM
         encoder.reset();
-        encoder.start();
+        //encoder.start();
 
         // Create controller object
         controller = new PIDControllerII(Kp, Ki, Kd,
@@ -467,7 +467,7 @@ public class Wheel implements MotorSafety
         encoder.setDistancePerPulse(2.0 * Math.PI / encPPR / gearRatio);// Disance in rad at wheel
         //encoder.setMaxPeriod(60.0 / (5.0 * encPPR));// Based on 5 motor RPM
         encoder.reset();
-        encoder.start();
+        //encoder.start();
 
         // Create controller object
         controller = new PIDControllerII(Kp, Ki, Kd,
@@ -690,7 +690,6 @@ public class Wheel implements MotorSafety
     
     public String getDescription()
     {
-        return "Wheel controller " + motor.getChannel()
-                + " on module " + motor.getModuleNumber();
+        return "Wheel controller " + motor.getChannel();
     }
 }
