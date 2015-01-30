@@ -12,7 +12,7 @@
 *******************************************************************************/
 
 // Declare our package
-package judge.util;
+package org.usfirst.frc.util;
 
 /**
  * PID Controller object with anti-windup mechanisms.  To be used for closing
