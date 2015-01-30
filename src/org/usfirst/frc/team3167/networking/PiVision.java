@@ -15,6 +15,7 @@ public class PiVision
 {
     private int port;
     private DatagramSocket socket;
+    private DatagramPacket packet;
     private byte[] buffer;
     
     public PiVision(int port)
@@ -22,5 +23,11 @@ public class PiVision
         this.port = port;
         socket = new DatagramSocket(port);
         buffer = new byte[2048];
+        packet = new DatagramPacket(buffer, buffwer.length);
+    }
+    
+    public void receive()
+    {
+        socket.receive(); 
     }
 }
