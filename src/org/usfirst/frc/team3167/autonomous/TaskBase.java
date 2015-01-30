@@ -1,90 +1,104 @@
 /*******************************************************************************
-* File: TaskBase.java
-* Date: 1/10/14
-* Auth: Mark Macerato
-* Desc: Abstract template for a series of instructions 
+* File:  TaskBase.java
+* Date:  1/13/2011
+* Auth:  K. Loux
+* Desc:  Abstract base class for task objects for use in autonomous mode.
 *******************************************************************************/
 
+// Declare our package
+package judge.autonomous.tasks;
+
+// Local imports
+import judge.util.StateMachineBase;
+
 /**
- * Class defining the template for a robot task using
- * a state machine
- * 
- * @author Mark Macerato
+ * Abstract base class for creating robot tasks.
+ *
+ * @author K. Loux
  */
 public abstract class TaskBase extends StateMachineBase
 {
     // Fields
-    private String taskName;
-    private boolean taskStarted;
-    
-    /**
-     * Create a task with a chosen name
-     * 
-     * @param taskName  Name of the task
-     */
-    protected TaskBase(String taskName)
+	private final String taskName;
+    private boolean taskStarted = false;
+
+	// Methods
+	/**
+	 * Constructor.  Assigns task name.  Must be called with super() in derived
+	 * classes.
+	 *
+	 * @param _taskName	String describing this task (21 characters or less)
+	 */
+    protected TaskBase(String _taskName)
     {
-        this.taskName = taskName;
-        taskStarted = false;
+        taskName = _taskName;
     }
-    
-    /**
-     * Carry out the instructions in the task, by running the state machine
-     * that this class extends
-     */
-    protected final void executeTask()
+
+	/**
+	 * Calls Process() method from StateMachineBase (in derived classes) and
+	 * sets a flag indicating that we've started performing this task.
+	 */
+    protected final void PerformTaskActions()
     {
         taskStarted = true;
-        execute();
+
+		// Call the main state machine method that handles state transitions and
+		// the main state handling methods (override at least ProcessState in
+		// order to make this do something)
+        Process();
     }
-    
-    /**
-     * Details all instructions to be carried should this task be removed from
-     * the task que.  Abstract method must be overriden in subclass.
-     */ 
-    protected abstract void onRemoval();
-    
-    /**
-     * If the task has begun already, and it needs to be stopped, this method
-     * will perform the needed instructions to abort the task
-     */
-    protected final void cleanupTask()
+
+	/**
+	 * Returns a boolean indicating whether or not we've completed the task.
+	 * Abstract method must be overridden in derived classes.
+	 *
+	 * @return boolean indicating whether or not the task is complete
+	 */
+	protected abstract boolean IsComplete();
+
+	/**
+	 * Method called upon task deletion in order to handle cleaning up any
+	 * potential unfinished items.  Abstract method must be overridden in
+	 * derived classes.
+	 */
+    protected abstract void OnRemoveTask();
+
+	/**
+	 * Calls OnRemoveTask() in and only if this task has been started, otherwise
+	 * does nothing.
+	 */
+    protected final void CleanUpTask()
     {
-        if(taskStarted) onRemoval();
+        // If the task has been started, perform cleanup activities
+        if (taskStarted)
+            OnRemoveTask();
     }
-    
-    /**
-     * Whether or not the task has been completed yet, and the robot can move
-     * on. Abstract method must be overriden in subclass.
-     * 
-     * @return  Whether the robot is done this task or not
-     */ 
-    protected abstract boolean isComplete();
-    
-    /**
-     * Provides the name of the robots current state for the purpose of 
-     * printing. Abstract method must be overriden in subclass.
-     * 
-     * @return  Name of the current state
-     */ 
-    protected abstract String getStateName();
-    
-    /**
-     * Gets the name assigned to the task in the constructor, for printing 
-     * purposes
-     * 
-     * @return  Name of the task
-     */ 
-    public final String getName()
-    {
-        return taskName;   
-    }
-    
-    /**
-     * Boolean indicating whether or not operator override is possible at this
-     * time. Abstract method must be overriden in subclass.
-     * 
-     * @return  Whether the operator may intervene or not
-     */ 
-    protected abstract boolean okToDrive();
+
+	/**
+	 * Returns the name of this task.
+	 *
+	 * @return String indicating the name of this task
+	 */
+	public final String GetName()
+	{
+		return taskName;
+	}
+
+	/**
+	 * Returns the name of the current state of the task.  Abstract method must
+	 * be overridden by derrived classes.
+	 *
+	 * @return String indicating the current state of the task
+	 */
+	public abstract String GetStateName();
+
+	/**
+	 * Returns a boolean indicating whether or not it is OK to respond to the
+	 * operator's joystick inputs (for driving).  Abstract method must be
+	 * overridden by derrived classes.
+	 *
+	 * @return boolean indicating whether or not it is OK to respond to operator
+	 * inputs
+	 */
+	protected abstract boolean OkToDrive();
 }
