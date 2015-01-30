@@ -1,74 +1,80 @@
-/*
- * Team 3167, Father Judge High School
- */
-package org.usfirst.frc.team3167.drive;
+/*******************************************************************************
+* File:  WheelList.java
+* Date:  1/12/2011
+* Auth:  K. Loux
+* Desc:  Fast array for Wheel objects.  Would prefer an ArrayList or Vector, but
+*        FRC restrictions on java version require an alternative.
+*******************************************************************************/
+
+// Declare our package
+package judge.drive;
 
 /**
- * Implementation of the standard ArrayList class that can be used for the
- * wheel objects, since that class is not available in FRC java
- * 
- * @author Mark Macerato
+ * Variable size list of wheel objects.
+ *
+ * @author K. Loux
  */
-public class WheelCollection 
-{    
-    // Size of the list, and an array that actually holds the objects
-    private int size;
-    private Wheel[] wheels;
-    
+public class WheelList
+{
+    // Fields
+    private Wheel array[];
+    private int arraySize = 0;
+
+    // Methods
     /**
-     * Constructor
-     * 
-     * @param size size of the collection by default
-     */
-    public WheelCollection(int size)
+	 * Adds a wheel to the list.
+	 *
+	 * @param newWheel	Object to be added to the list
+	 */
+    public void Add(Wheel newWheel)
     {
-        this.size = size;
-        wheels = new Wheel[size];
-    }
-    
-    /**
-     * Add a wheel to the collection.  If the collection is full, resize it
-     * 
-     * @param wheel     Wheel to be added
-     */
-    public void add(Wheel wheel)
-    {
-        if(wheels[size - 1] != null)
+        // Create a temporary array to store the current list
+        int i;
+        if (arraySize > 0)
         {
-            Wheel[] temp = new Wheel[size];
-            System.arraycopy(wheels, 0, temp, 0, size);
-            wheels = new Wheel[size + 1];
-            System.arraycopy(temp, 0, wheels, 0, size);
-            wheels[size] = wheel;
+            Wheel tempArray[] = new Wheel[arraySize];
+            for (i = 0; i < arraySize; i++)
+                tempArray[i] = array[i];
+
+            // Resize the current list
+            array = new Wheel[arraySize + 1];
+
+            // Repopulate the list
+            for (i = 0; i < arraySize; i++)
+                array[i] = tempArray[i];
         }
-        
-        for(int i = 0; i < size; i++)
+        else
         {
-            if(wheels[i] == null)
-            {
-                wheels[i] = wheel;
-            }
+            i = 0;
+            array = new Wheel[1];
         }
+
+        // Add the new item
+        array[i] = newWheel;
+
+        // Increment the array size
+        arraySize++;
     }
-    
+
     /**
-     * Return the wheel at index i
-     * 
-     * @param i     Index of the wheel we want
-     * @return      The wheel at index i
-     */
-    public Wheel get(int i)
+	 * Returns the object at the specified list index.
+	 *
+	 * @param i	List index from which to retrieve the wheel
+	 *
+	 * @return Specified wheel object
+	 */
+    public Wheel Get(int i)
     {
-        return wheels[i];
+        return array[i];
     }
-    
+
     /**
-     * Get the size of the array list
-     * 
-     * @return  the size of the arraylist 
-     */
-    public int size()
+	 * Returns the number of wheels in the list
+	 *
+	 * @return Number of wheels in the list
+	 */
+    public int Size()
     {
-        return size;
+        return arraySize;
     }
 }
