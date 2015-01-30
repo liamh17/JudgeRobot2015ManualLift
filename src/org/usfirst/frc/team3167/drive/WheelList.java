@@ -7,7 +7,7 @@
 *******************************************************************************/
 
 // Declare our package
-package judge.drive;
+package org.usfirst.frc.drive;
 
 /**
  * Variable size list of wheel objects.
