@@ -6,7 +6,7 @@
 *******************************************************************************/
 
 // Declare our package
-package judge.autonomous.tasks;
+package org.usfirst.frc.drive;
 
 // Local imports
 import judge.util.StateMachineBase;
