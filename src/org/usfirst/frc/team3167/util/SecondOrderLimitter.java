@@ -6,7 +6,7 @@
 *******************************************************************************/
 
 // Declare our package
-package judge.util;
+package org.usfirst.frc.util;
 
 /**
  * Object that limits the magnitude of a signal and it's first derivative.  Can
