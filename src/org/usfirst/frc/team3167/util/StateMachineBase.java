@@ -6,7 +6,7 @@
 *******************************************************************************/
 
 // Declare our package
-package judge.util;
+package org.usfirst.frc.util;
 
 /**
  * Base class for creating state machines.  Handles state transitions and
