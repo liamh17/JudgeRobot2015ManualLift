@@ -16,8 +16,8 @@ package org.usfirst.frc.team3167.util;
  */
 public abstract class StateMachineBase
 {
-    private byte state = -1;// Initialize to something different than nextState
-    private byte nextState = 0;// Assume initial state has value zero
+    private int state = -1;// Initialize to something different than nextState
+    private int nextState = 0;// Assume initial state has value zero
 
     // Methods
     /**
@@ -65,11 +65,11 @@ public abstract class StateMachineBase
     }
 
 	/**
-	 * Returns the byte representing the current state.
+	 * Returns the int representing the current state.
 	 *
 	 * @return Current state
 	 */
-	protected final byte GetState()
+	protected final int GetState()
 	{
 		return state;
 	}
@@ -80,7 +80,7 @@ public abstract class StateMachineBase
 	 *
 	 * @param _nextState Machine's next state
 	 */
-	protected final void SetNextState(byte _nextState)
+	protected final void SetNextState(int _nextState)
 	{
 		nextState = _nextState;
 	}
