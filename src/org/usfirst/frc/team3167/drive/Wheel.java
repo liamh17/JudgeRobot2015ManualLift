@@ -115,7 +115,7 @@ public class Wheel implements MotorSafety
         axisY = _axisY / axisMag;
 
         // Create the motor object
-        motor = new Jaguar(motorSlot, motorChannel);
+        motor = new Jaguar(motorChannel);
         motor.set(0.0);
 
 		// Assign a nonsense values to unneeded final fields
@@ -194,11 +194,11 @@ public class Wheel implements MotorSafety
         axisY = _axisY / axisMag;
 
         // Create the motor object
-        motor = new Jaguar(motorSlot, motorChannel);
+        motor = new Jaguar(motorChannel);
         motor.set(0.0);
 
         // Create the encoder object
-        encoder = new Encoder(encSlotA, encChanA, encSlotB, encChanB,
+        encoder = new Encoder(encChanA, encChanB,
                 reverseEncoder);
         encoder.setDistancePerPulse(2.0 * Math.PI / encPPR / gearRatio);// Disance in rad at wheel
         //encoder.setMaxPeriod(60.0 / (5.0 * encPPR));// Based on 5 motor RPM
@@ -281,11 +281,11 @@ public class Wheel implements MotorSafety
         axisY = _axisY / axisMag;
 
         // Create the motor object
-        motor = new Jaguar(motorSlot, motorChannel);
+        motor = new Jaguar(motorChannel);
         motor.set(0.0);
 
         // Create the encoder object
-        encoder = new Encoder(encSlotA, encChanA, encSlotB, encChanB,
+        encoder = new Encoder(encChanA, encChanB,
                 reverseEncoder);
         encoder.setDistancePerPulse(2.0 * Math.PI / encPPR / gearRatio);// Disance in rad at wheel
         //encoder.setMaxPeriod(60.0 / (5.0 * encPPR));// Based on 5 motor RPM
@@ -369,11 +369,11 @@ public class Wheel implements MotorSafety
         axisY = _axisY / axisMag;
 
         // Create the motor object
-        motor = new Jaguar(motorSlot, motorChannel);
+        motor = new Jaguar(motorChannel);
         motor.set(0.0);
 
         // Create the encoder object
-        encoder = new Encoder(encSlotA, encChanA, encSlotB, encChanB,
+        encoder = new Encoder(encChanA, encChanB,
                 reverseEncoder);
         encoder.setDistancePerPulse(2.0 * Math.PI / encPPR / gearRatio);// Disance in rad at wheel
         //encoder.setMaxPeriod(60.0 / (5.0 * encPPR));// Based on 5 motor RPM
@@ -458,11 +458,11 @@ public class Wheel implements MotorSafety
         axisY = _axisY / axisMag;
 
         // Create the motor object
-        motor = new Jaguar(motorSlot, motorChannel);
+        motor = new Jaguar(motorChannel);
         motor.set(0.0);
 
         // Create the encoder object
-        encoder = new Encoder(encSlotA, encChanA, encSlotB, encChanB,
+        encoder = new Encoder(encChanA, encChanB,
                 reverseEncoder);
         encoder.setDistancePerPulse(2.0 * Math.PI / encPPR / gearRatio);// Disance in rad at wheel
         //encoder.setMaxPeriod(60.0 / (5.0 * encPPR));// Based on 5 motor RPM
