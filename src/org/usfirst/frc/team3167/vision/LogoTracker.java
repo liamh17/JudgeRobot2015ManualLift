@@ -37,7 +37,7 @@ public class LogoTracker
 		System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
 
 		detector = FeatureDetector.create(FeatureDetector.SIFT);
-		matcher = DescriptorMatcher.create(DescriptorMatcher.BRUTEFORCE);
+		matcher = DescriptorMatcher.create(DescriptorMatcher.BRUTEFORCE_SL2);
 		templateDescriptors = new Mat();
 		extractor = DescriptorExtractor.create(DescriptorExtractor.SIFT);
 		templateKeypoints = new MatOfKeyPoint();
@@ -91,10 +91,15 @@ public class LogoTracker
 				public int compare(DMatch match1, DMatch match2)
 				{
 					if(match1.distance < match2.distance) return -1;
-					else if(match1.distance > match2.distance) return -1;
+					else if(match1.distance > match2.distance) return 1;
 					else return 0;
 				}
 			});
+		
+		for(int i = 0; i < matchArray.length; i++)
+		{
+			System.out.println(matchArray[i]);
+		}
 		
 		DMatch[] tmp = matchArray;
 		matchArray = new DMatch[30];
