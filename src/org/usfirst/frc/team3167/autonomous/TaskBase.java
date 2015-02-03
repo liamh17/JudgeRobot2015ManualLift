@@ -86,7 +86,7 @@ public abstract class TaskBase extends StateMachineBase
 
 	/**
 	 * Returns the name of the current state of the task.  Abstract method must
-	 * be overridden by derrived classes.
+	 * be overridden by derived classes.
 	 *
 	 * @return String indicating the current state of the task
 	 */
@@ -95,7 +95,7 @@ public abstract class TaskBase extends StateMachineBase
 	/**
 	 * Returns a boolean indicating whether or not it is OK to respond to the
 	 * operator's joystick inputs (for driving).  Abstract method must be
-	 * overridden by derrived classes.
+	 * overridden by derived classes.
 	 *
 	 * @return boolean indicating whether or not it is OK to respond to operator
 	 * inputs

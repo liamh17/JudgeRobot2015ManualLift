@@ -2,11 +2,6 @@
 package org.usfirst.frc.team3167.robot;
 
 import edu.wpi.first.wpilibj.IterativeRobot;
-import edu.wpi.first.wpilibj.Gyro;
-import edu.wpi.first.wpilibj.Jaguar;
-import edu.wpi.first.wpilibj.Joystick;
-
-import org.usfirst.frc.team3167.drive.HolonomicRobotDrive;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -24,14 +19,26 @@ public class Robot extends IterativeRobot
      */
     public void robotInit() 
     {
-
+    	// TODO:  Create all the stuff here
+    }
+    
+    private void DoCommonUpdates()
+    {
+    	// TODO:  Update all of our common objects
+    	// Both lifts
+    	// Both target trackers
+    	// Holonomic drive object
+    	// Task manager
+    	// Anything else?
     }
     
     /**
      * This function is called periodically during autonomous
      */
-    public void autonomousPeriodic() {
-
+    public void autonomousPeriodic()
+    {
+    	DoCommonUpdates();
+    	// TODO:  Do stuff here
     }
 
     /**
@@ -39,14 +46,15 @@ public class Robot extends IterativeRobot
      */
     public void teleopPeriodic() 
     {
-
+    	DoCommonUpdates();
+    	// TODO:  Do stuff here
     }
     
     /**
      * This function is called periodically during test mode
      */
-    public void testPeriodic() {
-    
+    public void testPeriodic()
+    {
     }
     
 }
