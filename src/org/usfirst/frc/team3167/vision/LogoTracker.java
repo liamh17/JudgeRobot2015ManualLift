@@ -7,9 +7,15 @@ import java.util.Arrays;
 import java.util.Comparator;
 
 import org.opencv.calib3d.Calib3d;
+import org.opencv.core.Core;
+import org.opencv.core.CvType;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfDMatch;
+import org.opencv.core.MatOfDouble;
 import org.opencv.core.MatOfKeyPoint;
+import org.opencv.core.MatOfPoint2f;
+import org.opencv.core.MatOfPoint3f;
+import org.opencv.core.Point;
 import org.opencv.features2d.DMatch;
 import org.opencv.features2d.DescriptorExtractor;
 import org.opencv.features2d.DescriptorMatcher;
@@ -49,6 +55,11 @@ public class LogoTracker extends Tracker
 	private KeyPoint[] imageKeypoints;		 // Mat of keypoints in the most recent image we viewed
 	
 	private ArrayList<DMatch> matches;		 // List of matches in most recent image
+	private static final double LOGO_LENGTH = 1;
+	private static final double LOGO_HEIGHT = 1;
+	
+	private static MatOfDouble cameraMatrix;
+	private static MatOfDouble dist;
 
 	/**
 	 * Create a LogoTracker
@@ -70,6 +81,20 @@ public class LogoTracker extends Tracker
 		imageKeypoints = null;				// No keypoints have been found yet
 		matches = new ArrayList<DMatch>();	
 
+		cameraMatrix = new MatOfDouble(3,3);
+		cameraMatrix.put(0, 0, 596.01281738);
+		cameraMatrix.put(0, 2, 326.04810079);
+		cameraMatrix.put(1, 1, 589.50994873);
+		cameraMatrix.put(1, 2, 247.26001282);
+		cameraMatrix.put(2, 2, 1.0);
+		
+		dist = new MatOfDouble(1,5);
+		dist.put(0, 0, -0.46737483);
+		dist.put(0, 1,  0.26953156);
+		dist.put(0, 2, -0.00093982);
+		dist.put(0, 3, -0.00864156);
+		dist.put(0, 4,  0.26339206);
+		
 		init = false;						// init() needs to be called before we can do anything
 	}
 	
@@ -140,7 +165,7 @@ public class LogoTracker extends Tracker
 		{
 			int numNeighbors = 0;
 			
-			// Get the oordinates of the image keypoint for this match
+			// Get the coordinates of the image keypoint for this match
 			int x = (int)imageKeypoints[match.trainIdx].pt.x;
 			int y = (int)imageKeypoints[match.trainIdx].pt.y;
 			
@@ -194,18 +219,43 @@ public class LogoTracker extends Tracker
 	 */
 	public RobotKinematics getPosition()
 	{
-		// TODO: infer position from the collected data
-		// TODO: Find all of these variables given to solvePnP
 		
 		Mat rvec = new Mat();
 		Mat tvec = new Mat();
 		
+		
+		MatOfPoint2f imagePoints = new MatOfPoint2f();
+		MatOfPoint3f objectPoints = findObjectPoints();
+		
+		for(int i = 0; i < matches.size(); i++)
+		{
+			DMatch match = matches.get(i);
+			double[] point = {imageKeypoints[match.queryIdx].pt.x, imageKeypoints[match.queryIdx].pt.y};
+			imagePoints.put(0, i, point);
+		}
+		
 		/* Object points are the point on the logo in a 'logo coordinate system'.  It uses the same
 		   units that we want to know the robot position in, and consist of an x,y coordinate 
 		   system on the plane of the logo. */
-		Calib3d.solvePnP(objectPoints, imagePoints, cameraMatrix, distCoeffs, rvec, tvec);
+		Calib3d.solvePnP(objectPoints, imagePoints, cameraMatrix, dist, rvec, tvec);
 		
-		// TODO: Convert rvec and tvec to a RobotKinenmatics object and return it
+		MatOfDouble R = new MatOfDouble();
+		Calib3d.Rodrigues(rvec, R);
+		
+		MatOfDouble cameraRotationVector = new MatOfDouble();
+		Calib3d.Rodrigues(R.t(), cameraRotationVector);
+		
+		MatOfDouble cameraTranslationVector = new MatOfDouble();
+		Core.gemm(R, tvec, -1, null, 0, cameraTranslationVector);
+		
+		RobotKinematics pose = new RobotKinematics();
+		pose.x = cameraTranslationVector.get(0, 0)[0];
+		pose.y = cameraTranslationVector.get(0, 1)[0];
+		pose.theta = cameraRotationVector.get(0,0)[0]*cameraRotationVector.get(0,0)[0]
+				+ cameraRotationVector.get(0,1)[0]*cameraRotationVector.get(0,1)[0]
+				+ cameraRotationVector.get(0,2)[0]*cameraRotationVector.get(0,2)[0];
+		
+		return pose;
 	}
 	
 	/**
@@ -228,7 +278,6 @@ public class LogoTracker extends Tracker
 		
 		// Read the image as a Mat using OpenCV
 		return Highgui.imread("image.jpg", 0);
-		
 	}
 	
 	/**
@@ -274,4 +323,40 @@ public class LogoTracker extends Tracker
 		
 		return matchArray;
 	}
+	
+	private MatOfPoint3f findObjectPoints()
+	{
+		double leastX = 3000;
+		double leastY = 3000;
+		
+		MatOfPoint3f objectPoints = new MatOfPoint3f();
+		for(DMatch match : matches)
+		{
+			double x = templateKeypoints.toArray()[match.queryIdx].pt.x;
+			double y = templateKeypoints.toArray()[match.queryIdx].pt.y;
+			
+			if(x < leastX)
+			{
+				leastX = x;
+			}
+			
+			if(y < leastY)
+			{
+				leastY = y;
+			}
+		}
+		
+		for(int i = 0; i < matches.size(); i++)
+		{
+			DMatch match = matches.get(i);
+			
+			double x = templateKeypoints.toArray()[match.queryIdx].pt.x - leastX;
+			double y = templateKeypoints.toArray()[match.queryIdx].pt.y - leastY;			
+			
+			double[] pointDouble = {x/LOGO_LENGTH, y/LOGO_HEIGHT, 0};
+			objectPoints.put(0, i, pointDouble);
+		}
+		
+		return objectPoints;
+	} 
 }
