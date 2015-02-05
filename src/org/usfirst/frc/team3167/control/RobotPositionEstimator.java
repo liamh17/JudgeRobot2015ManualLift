@@ -6,7 +6,7 @@ public class RobotPositionEstimator
 {
 	
 	private RobotKinematics position;
-	private boolean seesTote;
+	private boolean seesTote = false;
 	
 	public RobotPositionEstimator()
 	{
