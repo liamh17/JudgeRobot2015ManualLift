@@ -2,6 +2,12 @@
 package org.usfirst.frc.team3167.robot;
 
 import edu.wpi.first.wpilibj.IterativeRobot;
+import edu.wpi.first.wpilibj.Joystick;
+
+import org.usfirst.frc.team3167.drive.*;
+import org.usfirst.frc.team3167.autonomous.*;
+import org.usfirst.frc.team3167.util.Conversions;
+import org.usfirst.frc.team3167.util.DigitalSwitch;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -12,6 +18,19 @@ import edu.wpi.first.wpilibj.IterativeRobot;
  */
 public class Robot extends IterativeRobot 
 {
+	
+	private HolonomicRobotDrive drive;
+	private Lift narrowLift = new Lift(RobotConfiguration.narrowToteLiftMotorID,
+			new DigitalSwitch(RobotConfiguration.narrowToteHomeChannel),
+			RobotConfiguration.narrowHomeSwitchHeight);
+	private Lift wideLift = new Lift(RobotConfiguration.wideToteLiftMotorID,
+			new DigitalSwitch(RobotConfiguration.wideToteHomeChannel),
+			RobotConfiguration.wideHomeSwitchHeight);
+	
+	// TODO:  Add cameras and trackers
+	
+	private TaskManager taskManager = new TaskManager();
+	private Joystick driveJoystick = new Joystick(0);
 
     /**
      * This function is run when the robot is first started up and should be
@@ -19,17 +38,42 @@ public class Robot extends IterativeRobot
      */
     public void robotInit() 
     {
+    	BuildRobotDrive();
     	// TODO:  Create all the stuff here
     }
     
     private void DoCommonUpdates()
     {
+    	taskManager.DoCurrentTask();
+    	if (taskManager.OkToDrive())
+    	{
+    		try
+    		{
+    			drive.Drive(driveJoystick);
+    		}
+    		catch (Exception ex)
+    		{
+    			System.out.println("Failed to drive: " + ex.getMessage());
+    		}
+    	}
+    	
+    	narrowLift.Update();
+    	wideLift.Update();
+    	
     	// TODO:  Update all of our common objects
-    	// Both lifts
     	// Both target trackers
-    	// Holonomic drive object
-    	// Task manager
     	// Anything else?
+    }
+    
+    public void autonomousInit()
+    {
+    	taskManager.ClearAllTasks();
+    	
+    	if (true)
+    	{
+    		//taskManager.AddTask(new DriveForwardTask());// TODO:  What do we want to do for autonomous?
+    	}
+    	// TODO Add more options + ways to select
     }
     
     /**
@@ -40,6 +84,11 @@ public class Robot extends IterativeRobot
     	DoCommonUpdates();
     	// TODO:  Do stuff here
     }
+    
+    public void teleopInit()
+    {
+    	taskManager.ClearAllTasks();
+    }
 
     /**
      * This function is called periodically during operator control
@@ -47,7 +96,7 @@ public class Robot extends IterativeRobot
     public void teleopPeriodic() 
     {
     	DoCommonUpdates();
-    	// TODO:  Do stuff here
+    	// TODO:  Respond to button presses, etc.
     }
     
     /**
@@ -55,6 +104,47 @@ public class Robot extends IterativeRobot
      */
     public void testPeriodic()
     {
+    }
+    
+    private void BuildRobotDrive()
+    {
+    	drive = new HolonomicRobotDrive(RobotConfiguration.frequency);
+    	
+    	double maxWheelSpeed = RobotConfiguration.wheelMotorMaxSpeed
+    			/ RobotConfiguration.wheelGearboxRatio
+    			* Conversions.RPMToRadPerSec;// [rad/sec]
+    	double halfTrack = RobotConfiguration.track;// [in]
+    	double halfWheelbase = RobotConfiguration.wheelbase;// [in]
+    	double leftWheelAxisX = -1;
+    	double rightWheelAxisX = -leftWheelAxisX;
+    	double rollerAngle1 = RobotConfiguration.rollerAngle;
+    	double rollerAngle2 = -rollerAngle1;
+    	
+    	// Left front
+    	drive.AddWheel(new Wheel(-halfTrack, halfWheelbase, leftWheelAxisX, 0, rollerAngle1,
+    			RobotConfiguration.wheelRadius, RobotConfiguration.wheelGearboxRatio,
+    			RobotConfiguration.leftFrontMotorID, maxWheelSpeed,
+    			RobotConfiguration.wheelKp, RobotConfiguration.wheelKi, RobotConfiguration.wheelEncoderPPR));
+    	
+    	// Right front
+    	drive.AddWheel(new Wheel(halfTrack, halfWheelbase, rightWheelAxisX, 0, rollerAngle2,
+    			RobotConfiguration.wheelRadius, RobotConfiguration.wheelGearboxRatio,
+    			RobotConfiguration.rightFrontMotorID, maxWheelSpeed,
+    			RobotConfiguration.wheelKp, RobotConfiguration.wheelKi, RobotConfiguration.wheelEncoderPPR));
+    	
+    	// Left rear
+    	drive.AddWheel(new Wheel(-halfTrack, -halfWheelbase, leftWheelAxisX, 0, rollerAngle2,
+    			RobotConfiguration.wheelRadius, RobotConfiguration.wheelGearboxRatio,
+    			RobotConfiguration.leftRearMotorID, maxWheelSpeed,
+    			RobotConfiguration.wheelKp, RobotConfiguration.wheelKi, RobotConfiguration.wheelEncoderPPR));
+    	
+    	// Right rear
+    	drive.AddWheel(new Wheel(halfTrack, -halfWheelbase, rightWheelAxisX, 0, rollerAngle1,
+    			RobotConfiguration.wheelRadius, RobotConfiguration.wheelGearboxRatio,
+    			RobotConfiguration.rightRearMotorID, maxWheelSpeed,
+    			RobotConfiguration.wheelKp, RobotConfiguration.wheelKi, RobotConfiguration.wheelEncoderPPR));
+    	
+    	drive.Initialize();
     }
     
 }
