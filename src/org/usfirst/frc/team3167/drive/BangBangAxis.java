@@ -149,7 +149,7 @@ public class BangBangAxis
 			}
 		}
 		
-		cmdVel = cmdGenerator.Process(cmdVel);
+		cmdVel = cmdGenerator.Process(cmdVel);// TODO:  Fix this!
 		cmdPosition += cmdVel;
 		controller.DoControl(cmdPosition, GetPosition());
 	}

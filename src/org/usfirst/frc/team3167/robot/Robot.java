@@ -1,13 +1,16 @@
 
 package org.usfirst.frc.team3167.robot;
 
-import edu.wpi.first.wpilibj.IterativeRobot;
-import edu.wpi.first.wpilibj.Joystick;
-
-import org.usfirst.frc.team3167.drive.*;
-import org.usfirst.frc.team3167.autonomous.*;
+import org.opencv.core.Core;
+import org.usfirst.frc.team3167.autonomous.TaskManager;
+import org.usfirst.frc.team3167.drive.HolonomicRobotDrive;
+import org.usfirst.frc.team3167.drive.Lift;
+import org.usfirst.frc.team3167.drive.Wheel;
 import org.usfirst.frc.team3167.util.Conversions;
 import org.usfirst.frc.team3167.util.DigitalSwitch;
+
+import edu.wpi.first.wpilibj.IterativeRobot;
+import edu.wpi.first.wpilibj.Joystick;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -18,6 +21,11 @@ import org.usfirst.frc.team3167.util.DigitalSwitch;
  */
 public class Robot extends IterativeRobot 
 {
+	
+	static
+	{
+		System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
+	}
 	
 	private HolonomicRobotDrive drive;
 	private Lift narrowLift = new Lift(RobotConfiguration.narrowToteLiftMotorID,

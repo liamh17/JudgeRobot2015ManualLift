@@ -41,22 +41,27 @@ import edu.wpi.first.wpilibj.vision.AxisCamera;
  */
 public class LogoTracker extends Tracker
 {
-	private AxisCamera camera; 				 // Camera that is on the forklift side of the robot
-	private Mat template;	   				 // Mat holding the template image
+	static
+	{
+		System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
+	}
 	
-	private boolean init;	   				 // Whether or not init() has been called yet
+	private AxisCamera camera; 				 	 // Camera that is on the forklift side of the robot
+	private Mat template;	   				 	 	 // Mat holding the template image
+	
+	private boolean init;	   				 	 // Whether or not init() has been called yet
 
-	private MatOfKeyPoint templateKeypoints; // A mat of keypoints in the template image
-	private FeatureDetector detector;		 // Feature detector object for SIFT
-	private DescriptorMatcher matcher;       // SIFT descriptor matcher
-	private DescriptorExtractor extractor;   // SIFT description extractor
-	private Mat templateDescriptors;		 // Mat of descriptors extracted from the template image
+	private MatOfKeyPoint templateKeypoints; 	 // A mat of keypoints in the template image
+	private FeatureDetector detector;		 	 // Feature detector object for SIFT
+	private DescriptorMatcher matcher;       	 // SIFT descriptor matcher
+	private DescriptorExtractor extractor;   	 // SIFT description extractor
+	private Mat templateDescriptors;		 	 // Mat of descriptors extracted from the template image
 	
-	private KeyPoint[] imageKeypoints;		 // Mat of keypoints in the most recent image we viewed
+	private KeyPoint[] imageKeypoints;		 	 // Mat of keypoints in the most recent image we viewed
 	
-	private ArrayList<DMatch> matches;		 // List of matches in most recent image
-	private static final double LOGO_LENGTH = 1;
-	private static final double LOGO_HEIGHT = 1;
+	private ArrayList<DMatch> matches;		     // List of matches in most recent image
+	private static final double LOGO_LENGTH = 3;  // [in]
+	private static final double LOGO_HEIGHT = 3 + (5.0/8.0); // [in]
 	
 	private static MatOfDouble cameraMatrix;
 	private static MatOfDouble dist;
@@ -223,7 +228,6 @@ public class LogoTracker extends Tracker
 		Mat rvec = new Mat();
 		Mat tvec = new Mat();
 		
-		
 		MatOfPoint2f imagePoints = new MatOfPoint2f();
 		MatOfPoint3f objectPoints = findObjectPoints();
 		
@@ -267,17 +271,17 @@ public class LogoTracker extends Tracker
 	private Mat getImage() throws NIVisionException
 	{
 		// Check if "image.jpg" already exists.  If so, delete it
-		File file = new File("image.jpg");
+		File file = new File("\\home\\image.jpg");
 		if(file.exists())
 		{
 			file.delete();
 		}
 		
 		// Get the image and save it as "image.jpg"
-		camera.getImage().write("image.jpg");
+		camera.getImage().write("\\home\\lvuser\\image.jpg");
 		
 		// Read the image as a Mat using OpenCV
-		return Highgui.imread("image.jpg", 0);
+		return Highgui.imread("\\home\\lvuser\\image.jpg", 0);
 	}
 	
 	/**

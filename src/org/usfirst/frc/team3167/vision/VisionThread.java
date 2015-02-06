@@ -30,13 +30,13 @@ public class VisionThread extends Thread
 	{
 		if(tracker.seesTote())
 		{
-			manager.setSeesTote(true);;
+			manager.setSeesTarget(true);;
 			tracker.doAnalysis();
 			manager.setPosition(tracker.getPosition());
 		}
 		else
 		{
-			manager.setSeesTote(false);
+			manager.setSeesTarget(false);
 		}
 	}
 	
