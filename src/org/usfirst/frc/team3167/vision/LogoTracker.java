@@ -60,8 +60,8 @@ public class LogoTracker extends Tracker
 	private KeyPoint[] imageKeypoints;		 	 // Mat of keypoints in the most recent image we viewed
 	
 	private ArrayList<DMatch> matches;		     // List of matches in most recent image
-	private static final double LOGO_LENGTH = 3;  // [in]
-	private static final double LOGO_HEIGHT = 3 + (5.0/8.0); // [in]
+	private static final double LOGO_LENGTH = 3.0;  // [in]
+	private static final double LOGO_HEIGHT = 3.0 + (5.0/8.0); // [in]
 	
 	private static MatOfDouble cameraMatrix;
 	private static MatOfDouble dist;
@@ -330,34 +330,14 @@ public class LogoTracker extends Tracker
 	
 	private MatOfPoint3f findObjectPoints()
 	{
-		double leastX = 3000;
-		double leastY = 3000;
-		
-		MatOfPoint3f objectPoints = new MatOfPoint3f();
-		for(DMatch match : matches)
-		{
-			double x = templateKeypoints.toArray()[match.queryIdx].pt.x;
-			double y = templateKeypoints.toArray()[match.queryIdx].pt.y;
-			
-			if(x < leastX)
-			{
-				leastX = x;
-			}
-			
-			if(y < leastY)
-			{
-				leastY = y;
-			}
-		}
-		
 		for(int i = 0; i < matches.size(); i++)
 		{
 			DMatch match = matches.get(i);
 			
-			double x = templateKeypoints.toArray()[match.queryIdx].pt.x - leastX;
-			double y = templateKeypoints.toArray()[match.queryIdx].pt.y - leastY;			
+			double x = templateKeypoints.toArray()[match.queryIdx].pt.x;
+			double y = templateKeypoints.toArray()[match.queryIdx].pt.y;			
 			
-			double[] pointDouble = {x/LOGO_LENGTH, y/LOGO_HEIGHT, 0};
+			double[] pointDouble = {(x/138.0)*LOGO_WIDTH, (y/124.0)*LOGO_HEIGHT, 0};
 			objectPoints.put(0, i, pointDouble);
 		}
 		
