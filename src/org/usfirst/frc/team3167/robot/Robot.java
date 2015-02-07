@@ -1,7 +1,6 @@
 
 package org.usfirst.frc.team3167.robot;
 
-import org.opencv.core.Core;
 import org.usfirst.frc.team3167.autonomous.TaskManager;
 import org.usfirst.frc.team3167.drive.HolonomicRobotDrive;
 import org.usfirst.frc.team3167.drive.Lift;
@@ -20,13 +19,7 @@ import edu.wpi.first.wpilibj.Joystick;
  * directory.
  */
 public class Robot extends IterativeRobot 
-{
-	
-	static
-	{
-		System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
-	}
-	
+{	
 	private HolonomicRobotDrive drive;
 	private Lift narrowLift = new Lift(RobotConfiguration.narrowToteLiftMotorID,
 			new DigitalSwitch(RobotConfiguration.narrowToteHomeChannel),

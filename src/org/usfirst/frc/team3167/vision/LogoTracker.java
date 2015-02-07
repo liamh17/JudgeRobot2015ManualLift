@@ -6,21 +6,21 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 
-import org.opencv.calib3d.Calib3d;
+//import org.opencv.calib3d.Calib3d;
 import org.opencv.core.Core;
-import org.opencv.core.CvType;
+//import org.opencv.core.CvType;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfDMatch;
 import org.opencv.core.MatOfDouble;
 import org.opencv.core.MatOfKeyPoint;
 import org.opencv.core.MatOfPoint2f;
 import org.opencv.core.MatOfPoint3f;
-import org.opencv.core.Point;
+//import org.opencv.core.Point;
 import org.opencv.features2d.DMatch;
 import org.opencv.features2d.DescriptorExtractor;
 import org.opencv.features2d.DescriptorMatcher;
 import org.opencv.features2d.FeatureDetector;
-import org.opencv.features2d.Features2d;
+//import org.opencv.features2d.Features2d;
 import org.opencv.features2d.KeyPoint;
 import org.opencv.highgui.Highgui;
 import org.usfirst.frc.team3167.drive.RobotKinematics;
@@ -43,7 +43,7 @@ public class LogoTracker extends Tracker
 {
 	static
 	{
-		System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
+		System.loadLibrary("/usr/local/lib/lib_OpenCV/java/opencv_java2410.so");
 	}
 	
 	private AxisCamera camera; 				 	 // Camera that is on the forklift side of the robot
@@ -241,7 +241,7 @@ public class LogoTracker extends Tracker
 		/* Object points are the point on the logo in a 'logo coordinate system'.  It uses the same
 		   units that we want to know the robot position in, and consist of an x,y coordinate 
 		   system on the plane of the logo. */
-		Calib3d.solvePnP(objectPoints, imagePoints, cameraMatrix, dist, rvec, tvec);
+		/*Calib3d.solvePnP(objectPoints, imagePoints, cameraMatrix, dist, rvec, tvec);
 		
 		MatOfDouble R = new MatOfDouble();
 		Calib3d.Rodrigues(rvec, R);
@@ -250,14 +250,14 @@ public class LogoTracker extends Tracker
 		Calib3d.Rodrigues(R.t(), cameraRotationVector);
 		
 		MatOfDouble cameraTranslationVector = new MatOfDouble();
-		Core.gemm(R, tvec, -1, null, 0, cameraTranslationVector);
+		Core.gemm(R, tvec, -1, null, 0, cameraTranslationVector);*/
 		
 		RobotKinematics pose = new RobotKinematics();
-		pose.x = cameraTranslationVector.get(0, 0)[0];
+		/*pose.x = cameraTranslationVector.get(0, 0)[0];
 		pose.y = cameraTranslationVector.get(0, 1)[0];
 		pose.theta = cameraRotationVector.get(0,0)[0]*cameraRotationVector.get(0,0)[0]
 				+ cameraRotationVector.get(0,1)[0]*cameraRotationVector.get(0,1)[0]
-				+ cameraRotationVector.get(0,2)[0]*cameraRotationVector.get(0,2)[0];
+				+ cameraRotationVector.get(0,2)[0]*cameraRotationVector.get(0,2)[0];*/
 		
 		return pose;
 	}
@@ -330,7 +330,8 @@ public class LogoTracker extends Tracker
 	
 	private MatOfPoint3f findObjectPoints()
 	{
-		for(int i = 0; i < matches.size(); i++)
+		MatOfPoint3f objectPoints = null;
+		/*for(int i = 0; i < matches.size(); i++)
 		{
 			DMatch match = matches.get(i);
 			
@@ -339,7 +340,7 @@ public class LogoTracker extends Tracker
 			
 			double[] pointDouble = {(x/138.0)*LOGO_WIDTH, (y/124.0)*LOGO_HEIGHT, 0};
 			objectPoints.put(0, i, pointDouble);
-		}
+		}*/
 		
 		return objectPoints;
 	} 
