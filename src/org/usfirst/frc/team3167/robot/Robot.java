@@ -20,7 +20,6 @@ import edu.wpi.first.wpilibj.Joystick;
  */
 public class Robot extends IterativeRobot 
 {
-	
 	private HolonomicRobotDrive drive;
 	private Lift narrowLift = new Lift(RobotConfiguration.narrowToteLiftMotorID,
 			new DigitalSwitch(RobotConfiguration.narrowToteHomeChannel),
