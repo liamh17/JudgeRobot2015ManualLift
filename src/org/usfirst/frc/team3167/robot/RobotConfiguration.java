@@ -27,17 +27,17 @@ public class RobotConfiguration
 	public static final int wheelEncoderPPR = 360;
 	
 	// CAN Node IDs
-	public static final int leftFrontMotorID = 1;
-	public static final int rightFrontMotorID = 2;
-	public static final int leftRearMotorID = 3;
-	public static final int rightRearMotorID = 4;
-	public static final int narrowToteLiftMotorID = 5;
-	public static final int wideToteLiftMotorID = 6;
+	public static final int leftFrontMotorID = 5;
+	public static final int rightFrontMotorID = 6;
+	public static final int leftRearMotorID = 2;
+	public static final int rightRearMotorID = 1;
+	public static final int narrowToteLiftMotorID = 3;
+	public static final int wideToteLiftMotorID = 4;
 	public static final int powerDistBoardID = 7;
 	
 	// Digital inputs
-	public static final int narrowToteHomeChannel = 1;
-	public static final int wideToteHomeChannel = 2;
+	public static final int narrowToteHomeChannel = 9;
+	public static final int wideToteHomeChannel = 8;
 	
 	// Lift geometry
 	public static final double narrowHomeSwitchHeight = 10;// [in]

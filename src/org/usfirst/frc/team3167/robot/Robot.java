@@ -116,34 +116,41 @@ public class Robot extends IterativeRobot
     			* Conversions.RPMToRadPerSec;// [rad/sec]
     	double halfTrack = RobotConfiguration.track;// [in]
     	double halfWheelbase = RobotConfiguration.wheelbase;// [in]
-    	double leftWheelAxisX = -1;
+    	double leftWheelAxisX = 1;
     	double rightWheelAxisX = -leftWheelAxisX;
-    	double rollerAngle1 = RobotConfiguration.rollerAngle;
+    	double rollerAngle1 = -RobotConfiguration.rollerAngle;
     	double rollerAngle2 = -rollerAngle1;
     	
     	// Left front
     	drive.AddWheel(new Wheel(-halfTrack, halfWheelbase, leftWheelAxisX, 0, rollerAngle1,
-    			RobotConfiguration.wheelRadius, RobotConfiguration.wheelGearboxRatio,
+    			RobotConfiguration.wheelRadius, /*RobotConfiguration.wheelGearboxRatio*/1,
     			RobotConfiguration.leftFrontMotorID, maxWheelSpeed,
     			RobotConfiguration.wheelKp, RobotConfiguration.wheelKi, RobotConfiguration.wheelEncoderPPR));
     	
     	// Right front
     	drive.AddWheel(new Wheel(halfTrack, halfWheelbase, rightWheelAxisX, 0, rollerAngle2,
-    			RobotConfiguration.wheelRadius, RobotConfiguration.wheelGearboxRatio,
+    			RobotConfiguration.wheelRadius, /*RobotConfiguration.wheelGearboxRatio*/1,
     			RobotConfiguration.rightFrontMotorID, maxWheelSpeed,
     			RobotConfiguration.wheelKp, RobotConfiguration.wheelKi, RobotConfiguration.wheelEncoderPPR));
     	
     	// Left rear
     	drive.AddWheel(new Wheel(-halfTrack, -halfWheelbase, leftWheelAxisX, 0, rollerAngle2,
-    			RobotConfiguration.wheelRadius, RobotConfiguration.wheelGearboxRatio,
+    			RobotConfiguration.wheelRadius, /*RobotConfiguration.wheelGearboxRatio*/1,
     			RobotConfiguration.leftRearMotorID, maxWheelSpeed,
     			RobotConfiguration.wheelKp, RobotConfiguration.wheelKi, RobotConfiguration.wheelEncoderPPR));
     	
     	// Right rear
-    	drive.AddWheel(new Wheel(halfTrack, -halfWheelbase, rightWheelAxisX, 0, rollerAngle1,
-    			RobotConfiguration.wheelRadius, RobotConfiguration.wheelGearboxRatio,
+    	drive.AddWheel(new Wheel(halfTrack*2, -halfWheelbase, rightWheelAxisX, 0, rollerAngle1,// TODO:  Why do I need the *2?
+    			RobotConfiguration.wheelRadius, /*RobotConfiguration.wheelGearboxRatio*/1,
     			RobotConfiguration.rightRearMotorID, maxWheelSpeed,
     			RobotConfiguration.wheelKp, RobotConfiguration.wheelKi, RobotConfiguration.wheelEncoderPPR));
+    	
+    	// Add acceleration limits
+    	drive.SetFrictionCoefficient(0.7);// Creates acceleration limit
+
+    	// Set the deadband for the joysticks
+    	drive.SetDeadband(0.1);// horizontal deadband
+    	drive.SetMinimumOutput(0.1);// vertical deadband
     	
     	drive.Initialize();
     }

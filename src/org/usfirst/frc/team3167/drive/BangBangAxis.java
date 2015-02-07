@@ -108,7 +108,7 @@ public class BangBangAxis
 	
 	public void Update()
 	{
-		double cmdVel = 0.0;
+		double cmdVel = (cmdPosition - GetPosition()) * RobotConfiguration.frequency;
 		if (homeState != HomeState.Homed)
 		{
 			switch (homeState)

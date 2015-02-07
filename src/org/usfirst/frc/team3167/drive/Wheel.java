@@ -16,6 +16,8 @@ import edu.wpi.first.wpilibj.CANJaguar;
 import edu.wpi.first.wpilibj.Encoder;
 //import edu.wpi.first.wpilibj.;
 
+
+
 // Judge imports
 import org.usfirst.frc.team3167.util.PIDControllerII;
 import org.usfirst.frc.team3167.util.SecondOrderFilter;
@@ -112,10 +114,13 @@ public class Wheel
 
         // Create the motor object
         canMotor = new CANJaguar(canID);
-        System.out.println("Configuring CAN Jaguar ID " + canID
-        		+ "; found FW version " + canMotor.getFirmwareVersion());
         canMotor.setPercentMode();
         canMotor.configNeutralMode(CANJaguar.NeutralMode.Brake);
+        canMotor.setExpiration(0.1);
+        canMotor.setSafetyEnabled(true);
+        
+        System.out.println("Configuring CAN Jaguar ID " + canID
+        		+ "; found FW version " + canMotor.getFirmwareVersion());
 
 		// Assign a nonsense values to unneeded final fields
 		freq = 0.0;
@@ -220,6 +225,9 @@ public class Wheel
         		+ "; found FW version " + canMotor.getFirmwareVersion());
         
         canMotor.setSpeedMode(CANJaguar.kQuadEncoder, encPPR, Kp, Ki, 0);
+        canMotor.setExpiration(0.1);
+        canMotor.setSafetyEnabled(false);
+        canMotor.enableControl();
 
 		// Assign a nonsense values to unneeded final fields
 		freq = 0.0;
@@ -613,8 +621,15 @@ public class Wheel
         		canMotor.set(motorCmd, RobotConfiguration.wheelCANSyncGroup);
         	else if (controlType == CONTROL_CLOSED_LOOP)
         	{
-        		wheelVelocity = canMotor.getSpeed();// TODO:  We'll likely need some kind of scaling here
-        		canMotor.set(cmdOmega, RobotConfiguration.wheelCANSyncGroup);// TODO:  We'll likely need some kind of scaling here
+        		try
+        		{
+        			wheelVelocity = canMotor.getSpeed();// TODO:  We'll likely need some kind of scaling here
+        			canMotor.set(cmdOmega, RobotConfiguration.wheelCANSyncGroup);// TODO:  We'll likely need some kind of scaling here
+        		}
+        		catch (Exception ex)
+        		{
+        			System.out.println("Failed to set CAN motor speed:  " + ex.toString());
+        		}
         	}
         	else
         		throw new Exception("Incorrect control mode set in Wheel.DoControl");

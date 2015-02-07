@@ -160,6 +160,9 @@ public class HolonomicRobotDrive
     {
         // Create the n x 3 robot matrix
         double robotArray[][] = new double[wheelList.Size()][3];
+        
+        System.out.println("Initializing holonomic drive object");
+        System.out.println("    Found " + wheelList.Size() + " wheels");
 
         int i;
         double beta;
@@ -202,6 +205,9 @@ public class HolonomicRobotDrive
             wheelSpeedLimiter[i] = new SecondOrderLimiter(
 					wheelList.Get(i).GetMaxRotationRate(), wheelMaxAccel, freq);
         }
+        
+        System.out.println("robotMatrix = ");
+        System.out.println(robotMatrix.Print());
 
         // If we have full column rank, we have enough constraints defined to
         // control the motion of the robot.
@@ -311,6 +317,7 @@ public class HolonomicRobotDrive
     public void Drive(double vX, double vY, double omega)
             throws Exception
     {
+    	System.out.println("Calling drive with [" + vX + ", " + vY + ", " + omega + "]");
         // Make sure we're ready to rock and roll
         if (!initialized)
             throw new IllegalStateException(
