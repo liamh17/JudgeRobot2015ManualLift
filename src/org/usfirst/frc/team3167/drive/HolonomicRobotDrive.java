@@ -317,7 +317,8 @@ public class HolonomicRobotDrive
     public void Drive(double vX, double vY, double omega)
             throws Exception
     {
-    	System.out.println("Calling drive with [" + vX + ", " + vY + ", " + omega + "]");
+    	//System.out.println("Calling drive with [" + vX + ", " + vY + ", " + omega + "]");
+    	
         // Make sure we're ready to rock and roll
         if (!initialized)
             throw new IllegalStateException(

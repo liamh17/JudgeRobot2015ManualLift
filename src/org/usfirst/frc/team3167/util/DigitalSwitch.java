@@ -15,4 +15,9 @@ public class DigitalSwitch extends Button
 	{
 		return di.get();
 	}
+	
+	public int getChannel()
+	{
+		return di.getChannel();
+	}
 }

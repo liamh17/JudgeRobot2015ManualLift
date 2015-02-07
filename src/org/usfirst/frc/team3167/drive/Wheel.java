@@ -114,12 +114,13 @@ public class Wheel
 
         // Create the motor object
         canMotor = new CANJaguar(canID);
-        canMotor.setPercentMode();
-        canMotor.configNeutralMode(CANJaguar.NeutralMode.Brake);
-        canMotor.setExpiration(0.1);
-        canMotor.setSafetyEnabled(true);
+        //canMotor.setPercentMode();
+        //canMotor.configNeutralMode(CANJaguar.NeutralMode.Brake);
+        //canMotor.setExpiration(0.1);
+        //canMotor.setSafetyEnabled(true);
+        //canMotor.enableControl();//??
         
-        System.out.println("Configuring CAN Jaguar ID " + canID
+        System.out.println("Configuring Open-Loop CAN Jaguar ID " + canID
         		+ "; found FW version " + canMotor.getFirmwareVersion());
 
 		// Assign a nonsense values to unneeded final fields
@@ -202,7 +203,7 @@ public class Wheel
 	 */
     public Wheel(double _posX, double _posY, double _axisX, double _axisY,
             double _rollerAngle, double _radius, double gearRatio,
-			int canID, double _maxRotationRate,
+			double _maxRotationRate, int canID,
 			double Kp, double Ki, int encPPR)
     {
         // Assign geometry variables
@@ -221,12 +222,12 @@ public class Wheel
         
         // Create the motor object
         canMotor = new CANJaguar(canID);
-        System.out.println("Configuring CAN Jaguar ID " + canID
+        System.out.println("Configuring Closed-Loop CAN Jaguar ID " + canID
         		+ "; found FW version " + canMotor.getFirmwareVersion());
         
         canMotor.setSpeedMode(CANJaguar.kQuadEncoder, encPPR, Kp, Ki, 0);
-        canMotor.setExpiration(0.1);
-        canMotor.setSafetyEnabled(false);
+        //canMotor.setExpiration(0.1);
+        //canMotor.setSafetyEnabled(true);
         canMotor.enableControl();
 
 		// Assign a nonsense values to unneeded final fields
@@ -618,7 +619,7 @@ public class Wheel
         else if (canMotor != null)
         {
         	if (controlType == CONTROL_OPEN_LOOP)
-        		canMotor.set(motorCmd, RobotConfiguration.wheelCANSyncGroup);
+        		canMotor.set(motorCmd);//, RobotConfiguration.wheelCANSyncGroup);
         	else if (controlType == CONTROL_CLOSED_LOOP)
         	{
         		try

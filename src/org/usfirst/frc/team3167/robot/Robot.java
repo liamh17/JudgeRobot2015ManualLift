@@ -8,6 +8,7 @@ import org.usfirst.frc.team3167.drive.Wheel;
 import org.usfirst.frc.team3167.util.Conversions;
 import org.usfirst.frc.team3167.util.DigitalSwitch;
 
+import edu.wpi.first.wpilibj.CANJaguar;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Joystick;
 
@@ -64,10 +65,15 @@ public class Robot extends IterativeRobot
     	// TODO:  Update all of our common objects
     	// Both target trackers
     	// Anything else?
+    	
+    	// CAN objects - this line sends the commands
+    	CANJaguar.updateSyncGroup(RobotConfiguration.wheelCANSyncGroup);
     }
     
     public void autonomousInit()
     {
+    	System.out.println("autonomousInit");
+    	
     	taskManager.ClearAllTasks();
     	
     	if (true)
@@ -88,6 +94,8 @@ public class Robot extends IterativeRobot
     
     public void teleopInit()
     {
+    	System.out.println("teleopInit");
+    	
     	taskManager.ClearAllTasks();
     }
 
@@ -124,25 +132,25 @@ public class Robot extends IterativeRobot
     	// Left front
     	drive.AddWheel(new Wheel(-halfTrack, halfWheelbase, leftWheelAxisX, 0, rollerAngle1,
     			RobotConfiguration.wheelRadius, /*RobotConfiguration.wheelGearboxRatio*/1,
-    			RobotConfiguration.leftFrontMotorID, maxWheelSpeed,
+    			maxWheelSpeed, RobotConfiguration.leftFrontMotorID,
     			RobotConfiguration.wheelKp, RobotConfiguration.wheelKi, RobotConfiguration.wheelEncoderPPR));
     	
     	// Right front
     	drive.AddWheel(new Wheel(halfTrack, halfWheelbase, rightWheelAxisX, 0, rollerAngle2,
     			RobotConfiguration.wheelRadius, /*RobotConfiguration.wheelGearboxRatio*/1,
-    			RobotConfiguration.rightFrontMotorID, maxWheelSpeed,
+    			maxWheelSpeed, RobotConfiguration.rightFrontMotorID, 
     			RobotConfiguration.wheelKp, RobotConfiguration.wheelKi, RobotConfiguration.wheelEncoderPPR));
     	
     	// Left rear
     	drive.AddWheel(new Wheel(-halfTrack, -halfWheelbase, leftWheelAxisX, 0, rollerAngle2,
     			RobotConfiguration.wheelRadius, /*RobotConfiguration.wheelGearboxRatio*/1,
-    			RobotConfiguration.leftRearMotorID, maxWheelSpeed,
+    			maxWheelSpeed, RobotConfiguration.leftRearMotorID,
     			RobotConfiguration.wheelKp, RobotConfiguration.wheelKi, RobotConfiguration.wheelEncoderPPR));
     	
     	// Right rear
     	drive.AddWheel(new Wheel(halfTrack*2, -halfWheelbase, rightWheelAxisX, 0, rollerAngle1,// TODO:  Why do I need the *2?
     			RobotConfiguration.wheelRadius, /*RobotConfiguration.wheelGearboxRatio*/1,
-    			RobotConfiguration.rightRearMotorID, maxWheelSpeed,
+    			maxWheelSpeed, RobotConfiguration.rightRearMotorID,
     			RobotConfiguration.wheelKp, RobotConfiguration.wheelKi, RobotConfiguration.wheelEncoderPPR));
     	
     	// Add acceleration limits

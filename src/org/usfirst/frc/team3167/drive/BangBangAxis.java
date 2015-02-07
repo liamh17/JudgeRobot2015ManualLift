@@ -108,6 +108,7 @@ public class BangBangAxis
 	
 	public void Update()
 	{
+		System.out.println("Digital Switch on Channel " + homeSwitch.getChannel() + ": " + homeSwitch.IsPressed());
 		double cmdVel = (cmdPosition - GetPosition()) * RobotConfiguration.frequency;
 		if (homeState != HomeState.Homed)
 		{
@@ -121,7 +122,7 @@ public class BangBangAxis
 				
 			case FastTowardSwitch:
 				cmdVel = -normalStep;
-				if (homeSwitch.HasJustBeenPressed())
+				if (homeSwitch.IsPressed())
 				{
 					cmdGenerator = new SecondOrderLimiter(homingSpeed, homingAccel, RobotConfiguration.frequency);
 					homeState = HomeState.SlowAwayFromSwitch;
@@ -130,7 +131,7 @@ public class BangBangAxis
 				
 			case SlowAwayFromSwitch:
 				cmdVel = homingStep;
-				if (!homeSwitch.HasJustBeenPressed())
+				if (!homeSwitch.IsPressed())
 					homeState = HomeState.SlowTowardSwitch;
 				break;
 				
