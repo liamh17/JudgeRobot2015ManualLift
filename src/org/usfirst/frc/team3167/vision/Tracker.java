@@ -9,9 +9,9 @@ public abstract class Tracker
 {
 	protected abstract void init();
 	
-	protected abstract boolean seesTote();
+	public abstract boolean seesTote();
 	
-	protected abstract void doAnalysis();
+	public abstract void doAnalysis();
 	
-	protected abstract RobotKinematics getPosition();
+	public abstract RobotKinematics getPosition();
 }

@@ -215,7 +215,7 @@ public class LogoTracker extends Tracker
 	{
 		// MinMatches in the minimum number of matching keypoints in the image to qualify as having a tote
 		int minMatches = 10;
-		return minMatches >= minMatches;
+		return matches.size() >= minMatches;
 	}
 	 
 	/**
@@ -330,6 +330,7 @@ public class LogoTracker extends Tracker
 	
 	private MatOfPoint3f findObjectPoints()
 	{
+		MatOfPoint3f objectPoints = new MatOfPoint3f();
 		for(int i = 0; i < matches.size(); i++)
 		{
 			DMatch match = matches.get(i);
@@ -337,7 +338,7 @@ public class LogoTracker extends Tracker
 			double x = templateKeypoints.toArray()[match.queryIdx].pt.x;
 			double y = templateKeypoints.toArray()[match.queryIdx].pt.y;			
 			
-			double[] pointDouble = {(x/138.0)*LOGO_WIDTH, (y/124.0)*LOGO_HEIGHT, 0};
+			double[] pointDouble = {(x/138.0)*LOGO_LENGTH, 1 - (y/124.0)*LOGO_HEIGHT, 0};
 			objectPoints.put(0, i, pointDouble);
 		}
 		
