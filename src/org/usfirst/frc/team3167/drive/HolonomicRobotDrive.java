@@ -11,6 +11,7 @@ package org.usfirst.frc.team3167.drive;
 // WPI imports
 import edu.wpi.first.wpilibj.Joystick;
 
+
 // Judge imports
 import org.usfirst.frc.team3167.util.Matrix;
 import org.usfirst.frc.team3167.util.SecondOrderLimiter;
@@ -166,19 +167,21 @@ public class HolonomicRobotDrive
 
         int i;
         double beta;
+        double denominator;
         for (i = 0; i < wheelList.Size(); i++)
         {
             beta = wheelList.Get(i).GetRollerAngle() * Math.PI / 180.0;
+            denominator = wheelList.Get(i).GetRadius() * Math.cos(Math.PI / 2 + beta);
             robotArray[i][0] =
-                    (wheelList.Get(i).GetRotationAxisY() * Math.sin(beta) -
-                    wheelList.Get(i).GetRotationAxisX() * Math.cos(beta)) /
-                    (wheelList.Get(i).GetRadius() * Math.sin(beta));
+                    (wheelList.Get(i).GetRotationAxisX() * Math.cos(beta) -
+                    wheelList.Get(i).GetRotationAxisY() * Math.sin(beta)) /
+                    denominator;
             robotArray[i][1] =
                     -(wheelList.Get(i).GetRotationAxisX() * Math.sin(beta) +
                     wheelList.Get(i).GetRotationAxisY() * Math.cos(beta)) /
-                    (wheelList.Get(i).GetRadius() * Math.sin(beta));
-            robotArray[i][2] = wheelList.Get(i).GetXPos() * robotArray[i][1] -
-                    wheelList.Get(i).GetYPos() * robotArray[i][0];
+                    denominator;
+            robotArray[i][2] = -wheelList.Get(i).GetXPos() * robotArray[i][1] +
+                    -wheelList.Get(i).GetYPos() * robotArray[i][0];
         }
         robotMatrix = new Matrix(robotArray);
 
