@@ -171,17 +171,17 @@ public class HolonomicRobotDrive
         for (i = 0; i < wheelList.Size(); i++)
         {
             beta = wheelList.Get(i).GetRollerAngle() * Math.PI / 180.0;
-            denominator = wheelList.Get(i).GetRadius() * Math.cos(Math.PI / 2 + beta);
+            denominator = wheelList.Get(i).GetRadius() * Math.sin(beta);
             robotArray[i][0] =
-                    (wheelList.Get(i).GetRotationAxisX() * Math.cos(beta) -
-                    wheelList.Get(i).GetRotationAxisY() * Math.sin(beta)) /
+                    (wheelList.Get(i).GetRotationAxisY() * Math.sin(beta)
+                    - wheelList.Get(i).GetRotationAxisX() * Math.cos(beta) /
                     denominator;
             robotArray[i][1] =
                     -(wheelList.Get(i).GetRotationAxisX() * Math.sin(beta) +
                     wheelList.Get(i).GetRotationAxisY() * Math.cos(beta)) /
                     denominator;
-            robotArray[i][2] = -wheelList.Get(i).GetXPos() * robotArray[i][1] +
-                    -wheelList.Get(i).GetYPos() * robotArray[i][0];
+            robotArray[i][2] = wheelList.Get(i).GetXPos() * robotArray[i][1] -
+                    wheelList.Get(i).GetYPos() * robotArray[i][0];
         }
         robotMatrix = new Matrix(robotArray);
 
@@ -199,31 +199,31 @@ public class HolonomicRobotDrive
         for (i = 0; i < wheelList.Size(); i++)
         {
             wheelMaxAccel = friction * 12 * 32.174
-                    / wheelList.Get(i).GetRadius();
+                / wheelList.Get(i).GetRadius();
             wheelSpeedLimiter[i] = new SecondOrderLimiter(
-					wheelList.Get(i).GetMaxRotationRate(), wheelMaxAccel, freq);
+		wheelList.Get(i).GetMaxRotationRate(), wheelMaxAccel, freq);
         }
         
-        System.out.println("robotMatrix = ");
-        System.out.println(robotMatrix.Print());
+        //System.out.println("robotMatrix = ");
+        //System.out.println(robotMatrix.Print());
 
         // If we have full column rank, we have enough constraints defined to
         // control the motion of the robot.
         initialized = robotMatrix.GetRank() >= 3 ? true : false;
 
-		// Tell the user if initialization failed
-		if (!initialized)
-		{
-			System.err.println("HolonomicRobotDrive not initialized!");
-			System.err.println("    Check that AddWheel has been called for" +
-					" each wheel");
-			System.err.println("    There must be at least three wheels");
-			System.err.println("    The wheel's orientation and position must"+
-					" be sufficient to control the robot in all three DOF");
+	// Tell the user if initialization failed
+	if (!initialized)
+	{
+		System.err.println("HolonomicRobotDrive not initialized!");
+		System.err.println("    Check that AddWheel has been called for" +
+			" each wheel");
+		System.err.println("    There must be at least three wheels");
+		System.err.println("    The wheel's orientation and position must"+
+			" be sufficient to control the robot in all three DOF");
 
-			throw new ArithmeticException("Initialization of holonimic drive "
-					+ "failed!");
-		}
+		throw new ArithmeticException("Initialization of holonimic drive "
+			+ "failed!");
+	}
         else
         {
             // Determine the maximum allowed velocities based on max allowed
