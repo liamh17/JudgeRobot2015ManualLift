@@ -180,12 +180,7 @@ public class HolonomicRobotDrive
             robotArray[i][2] = wheelList.Get(i).GetXPos() * robotArray[i][1] -
                     wheelList.Get(i).GetYPos() * robotArray[i][0];
         }
-		robotArray[0][2] = -robotArray[2][2];
-		robotArray[1][2] = -robotArray[2][2];
         robotMatrix = new Matrix(robotArray);
-		//System.out.println(robotMatrix.Print());
-		/*robotMatrix.SetElement(2, 2, -robotMatrix.GetElement(0, 2));
-		robotMatrix.SetElement(3, 2, -robotMatrix.GetElement(1, 2));*/
 
         // Allocate the n x 1 velocity (actual and command) matrices
         cmdWheelVelocity = new Matrix(wheelList.Size(), 1);

@@ -122,11 +122,11 @@ public class Robot extends IterativeRobot
     	double maxWheelSpeed = RobotConfiguration.wheelMotorMaxSpeed
     			/ RobotConfiguration.wheelGearboxRatio
     			* Conversions.RPMToRadPerSec;// [rad/sec]
-    	double halfTrack = RobotConfiguration.track;// [in]
-    	double halfWheelbase = RobotConfiguration.wheelbase;// [in]
+    	double halfTrack = RobotConfiguration.track / 2;// [in]
+    	double halfWheelbase = RobotConfiguration.wheelbase / 2;// [in]
     	double leftWheelAxisX = 1;
     	double rightWheelAxisX = -leftWheelAxisX;
-    	double rollerAngle1 = -RobotConfiguration.rollerAngle;
+    	double rollerAngle1 = RobotConfiguration.rollerAngle;
     	double rollerAngle2 = -rollerAngle1;
     	
     	// Left front
@@ -148,7 +148,7 @@ public class Robot extends IterativeRobot
     			RobotConfiguration.wheelKp, RobotConfiguration.wheelKi, RobotConfiguration.wheelEncoderPPR));
     	
     	// Right rear
-    	drive.AddWheel(new Wheel(halfTrack*2, -halfWheelbase, rightWheelAxisX, 0, rollerAngle1,// TODO:  Why do I need the *2?
+    	drive.AddWheel(new Wheel(halfTrack, -halfWheelbase, rightWheelAxisX, 0, rollerAngle1,
     			RobotConfiguration.wheelRadius, /*RobotConfiguration.wheelGearboxRatio*/1,
     			maxWheelSpeed, RobotConfiguration.rightRearMotorID,
     			RobotConfiguration.wheelKp, RobotConfiguration.wheelKi, RobotConfiguration.wheelEncoderPPR));
