@@ -51,9 +51,7 @@ public class BangBangAxis
 	
 	private final double normalStep;// [units]
 	private final double homingStep;// [units]
-	
-	private double cmdVel;
-	
+		
 	public BangBangAxis(Jaguar motor, double normalSpeed, double normalAccel,
 			double homingSpeed, double homingAccel, DigitalSwitch homeSwitch,
 			double positionScale, double homeSwitchPosition, double tolerance, boolean reverse)
@@ -120,20 +118,23 @@ public class BangBangAxis
 	
 	public void Update()
 	{
-		//System.out.println("Digital Switch on Channel " + homeSwitch.getChannel() + ": " + homeSwitch.IsPressed());
-		double cmdVel = (cmdPosition - GetPosition()) * RobotConfiguration.frequency;
-
+		double cmdVel = 0.0;
+		//double cmdVel = (cmdPosition - GetPosition()) * RobotConfiguration.frequency;
+		System.out.println("CmdVel: " + cmdVel + ", Position: " + GetPosition());
 		if (homeState != HomeState.Homed)
 		{
 			switch (homeState)
 			{
 			default:
 			case NotStarted:
+				System.out.println(homeState);
+				cmdVel = 0.0;
 				cmdPosition = GetPosition();
 				cmdGenerator = new SecondOrderLimiter(normalSpeed, normalAccel, RobotConfiguration.frequency);
 				homeState = HomeState.FastTowardSwitch;
 				
 			case FastTowardSwitch:
+				System.out.println(homeState);
 				cmdVel = -normalStep;
 				if (homeSwitch.IsPressed())
 				{
@@ -143,34 +144,40 @@ public class BangBangAxis
 				break;
 				
 			case SlowAwayFromSwitch:
+				System.out.println(homeState);
 				cmdVel = homingStep;
 				if (!homeSwitch.IsPressed())
 					homeState = HomeState.SlowTowardSwitch;
 				break;
 				
 			case SlowTowardSwitch:
+				System.out.println(homeState);
 				if (homeSwitch.HasJustBeenPressed())
 				{
 					homeState = HomeState.Homed;
 					position = homeSwitchPosition;
 					cmdPosition = bufferedCmdPosition;
-					cmdVel = 0.0;
 					cmdGenerator = new SecondOrderLimiter(normalSpeed, normalAccel, RobotConfiguration.frequency);
-					canMotor.setCurrentMode(CANJaguar.kQuadEncoder, RobotConfiguration.wheelEncoderPPR, 1.0, 0.0, 0.0);
+					//canMotor.setCurrentMode(CANJaguar.kQuadEncoder, RobotConfiguration.wheelEncoderPPR, 1.0, 0.0, 0.0);
+					//canMotor.enableControl(homeSwitchPosition);
 				}
 				else
 					cmdVel = -homingStep;
 				break;
+				
 			}
-			this.cmdVel = cmdVel;
-			controller.DoControl((cmdVel/normalSpeed)*RobotConfiguration.frequency);
+			controller.DoControl(cmdVel*RobotConfiguration.frequency/normalSpeed);
 		}
 		else
 		{
-			cmdVel = cmdGenerator.Process(cmdVel);// TODO:  Fix this!
-			this.cmdVel = cmdVel;
+			//System.out.println("Post-state machine cmdVel: " + cmdVel);	
+			//cmdVel = cmdGenerator.Process(cmdVel);// TODO:  Fix this!
+			//System.out.println("Post-state processing cmdVel: " + cmdVel);	
+			//cmdPosition += cmdVel/RobotConfiguration.frequency;
+			//System.out.println("cmdPosition: " + cmdPosition);	
 			controller.DoControl(cmdPosition, GetPosition());
 		}
+		
 	}
 	
 	public double GetPosition()
@@ -183,14 +190,9 @@ public class BangBangAxis
 		{
 			return canMotor.getPosition() * positionScale;// TODO:  Scaling required here?
 		}
-		System.out.println("Both motors objects are null!");
 		return 0.0;
 	}
-	
-	public double getCmdVelocity()
-	{
-		return cmdVel;
-	}
+
 	
 	public void SetCmdPosition(double cmdPosition)
 	{

@@ -42,4 +42,6 @@ public class RobotConfiguration
 	// Lift geometry
 	public static final double narrowHomeSwitchHeight = 10;// [in]
 	public static final double wideHomeSwitchHeight = 10;// [in]
+	
+	public static final double sprocketPitchDiameter = 1.45; // [in]
 } 

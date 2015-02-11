@@ -1,6 +1,8 @@
 package org.usfirst.frc.team3167.util;
 
 // libWPI imports
+import org.usfirst.frc.team3167.robot.RobotConfiguration;
+
 import edu.wpi.first.wpilibj.CANJaguar.ControlMode;
 import edu.wpi.first.wpilibj.Jaguar;
 import edu.wpi.first.wpilibj.CANJaguar;
@@ -83,6 +85,9 @@ public class BangBangController
 		jag = null;
 		relay = null;
 
+		canJag.setPercentMode(CANJaguar.kQuadEncoder, -1*RobotConfiguration.wheelEncoderPPR);
+		canJag.enableControl();
+		
 		tolerance = _tolerance;
 		reverseCmd = _reverseCmd;
 	}
@@ -93,18 +98,15 @@ public class BangBangController
 	}
 	
 	/**
-	 * Method for sending a signal to Jaguars on open control loop
 	 * 
-	 * @param cmd	setpoint
 	 */
 	public void DoControl(double cmd)
 	{
 		if(canJag != null)
 		{
-			System.out.println(cmd);
 			canJag.set(cmd);
 		}
-		else if(jag != null)
+		if(jag != null)
 		{
 			jag.set(cmd);
 		}
@@ -165,7 +167,8 @@ public class BangBangController
 		}
 		else if (canJag != null)
 		{
-			if (cmd - act > tolerance)
+			System.out.println("Entered jag control loop");
+			if(cmd - act > tolerance)
 			{
 				if (reverseCmd)
 				{
@@ -173,6 +176,7 @@ public class BangBangController
 				}
 				else
 				{
+					System.out.println("Setting jaguar up");
 					canJag.set(speed);
 				}
 			}
@@ -184,11 +188,13 @@ public class BangBangController
 				}
 				else
 				{
+					System.out.println("Setting jaguar down");
 					canJag.set(-speed);
 				}
 			}
 			else
 			{
+				System.out.println("Setting jaguar neutral");
 				canJag.set(0.0);
 			}
 		}

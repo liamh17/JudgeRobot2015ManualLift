@@ -62,9 +62,10 @@ public class Robot extends IterativeRobot
     	/*System.out.println(narrowLift.getSwitch().IsPressed() +  " " 
     			+ narrowLift.getSwitch().HasJustBeenPressed());*/
     	
-    	narrowLift.GoToPosition(1000.0);
+    	//narrowLift.GoToPosition(1000.0);
     	narrowLift.Update();
-    	System.out.println(narrowLift.GetPosition());
+    	narrowLift.SetCmdPosition(8.0);
+    	//System.out.println(narrowLift.GetPosition());
     	//wideLift.Update();
     	
     	// TODO:  Update all of our common objects

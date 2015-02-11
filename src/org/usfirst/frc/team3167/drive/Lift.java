@@ -2,6 +2,7 @@ package org.usfirst.frc.team3167.drive;
 
 import edu.wpi.first.wpilibj.CANJaguar;
 
+import org.usfirst.frc.team3167.robot.RobotConfiguration;
 import org.usfirst.frc.team3167.util.DigitalSwitch;
 
 public class Lift extends BangBangAxis
@@ -13,7 +14,7 @@ public class Lift extends BangBangAxis
 	
 	private static final double positionTolerance = 0.2;// [in]
 	
-	private static final double encoderPositionScale = 1.0;// [in/encoder pulse] TODO:  Fix this
+	private static final double encoderPositionScale = Math.PI*(1.45);// [in/rev] TODO:  Fix this
 	
 	private static final double bottom = 0;// [in]
 	private static final double aboveGroundTote = 0;// [in]
