@@ -6,7 +6,7 @@ import org.usfirst.frc.team3167.util.DigitalSwitch;
 
 public class Lift extends BangBangAxis
 {
-	private static final double homingSpeed = 0.5;// [in/sec]
+	private static final double homingSpeed = 1.0;// [in/sec]
 	private static final double homingAccel = 0.5;// [in/sec^2]
 	private static final double normalSpeed = 4.0;// [in/sec]
 	private static final double normalAccel = 4.0;// [in/sec^2]

@@ -25,7 +25,10 @@ import org.opencv.features2d.KeyPoint;
 import org.opencv.highgui.Highgui;
 import org.usfirst.frc.team3167.drive.RobotKinematics;
 
+import edu.wpi.first.wpilibj.image.HSLImage;
+import edu.wpi.first.wpilibj.image.MonoImage;
 import edu.wpi.first.wpilibj.image.NIVisionException;
+import edu.wpi.first.wpilibj.image.RGBImage;
 import edu.wpi.first.wpilibj.vision.AxisCamera;
 
 /**
@@ -270,18 +273,13 @@ public class LogoTracker extends Tracker
 	 */
 	private Mat getImage() throws NIVisionException
 	{
-		// Check if "image.jpg" already exists.  If so, delete it
-		File file = new File("\\home\\image.jpg");
-		if(file.exists())
-		{
-			file.delete();
-		}
+		MonoImage image = camera.getImage().getLuminancePlane();
 		
-		// Get the image and save it as "image.jpg"
-		camera.getImage().write("\\home\\lvuser\\image.jpg");
+		// TODO: Convert the monoimage into an OpenCV mat
 		
 		// Read the image as a Mat using OpenCV
-		return Highgui.imread("\\home\\lvuser\\image.jpg", 0);
+		//return Highgui.imread("\\home\\lvuser\\image.jpg", 0);
+		return null;
 	}
 	
 	/**

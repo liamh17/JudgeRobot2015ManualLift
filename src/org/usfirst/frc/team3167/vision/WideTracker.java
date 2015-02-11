@@ -12,25 +12,25 @@ public class WideTracker extends Tracker
 	}
 
 	@Override
-	protected void init() {
+	public void init() {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	protected boolean seesTote() {
+	public boolean seesTote() {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
-	protected void doAnalysis() {
+	public void doAnalysis() {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	protected RobotKinematics getPosition() {
+	public RobotKinematics getPosition() {
 		// TODO Auto-generated method stub
 		return null;
 	}

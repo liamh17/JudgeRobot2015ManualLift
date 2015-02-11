@@ -7,6 +7,7 @@ import org.usfirst.frc.team3167.drive.Lift;
 import org.usfirst.frc.team3167.drive.Wheel;
 import org.usfirst.frc.team3167.util.Conversions;
 import org.usfirst.frc.team3167.util.DigitalSwitch;
+import org.usfirst.frc.team3167.util.JoystickButton;
 
 import edu.wpi.first.wpilibj.CANJaguar;
 import edu.wpi.first.wpilibj.IterativeRobot;
@@ -23,16 +24,15 @@ public class Robot extends IterativeRobot
 {
 	private HolonomicRobotDrive drive;
 	private Lift narrowLift = new Lift(RobotConfiguration.narrowToteLiftMotorID,
-			new DigitalSwitch(RobotConfiguration.narrowToteHomeChannel),
+			new DigitalSwitch(RobotConfiguration.narrowToteHomeChannel, false),
 			RobotConfiguration.narrowHomeSwitchHeight);
 	private Lift wideLift = new Lift(RobotConfiguration.wideToteLiftMotorID,
-			new DigitalSwitch(RobotConfiguration.wideToteHomeChannel),
+			new DigitalSwitch(RobotConfiguration.wideToteHomeChannel, false),
 			RobotConfiguration.wideHomeSwitchHeight);
 	
 	// TODO:  Add cameras and trackers
-	
 	private TaskManager taskManager = new TaskManager();
-	private Joystick driveJoystick = new Joystick(0);
+	private Joystick driveJoystick = new Joystick(1);
 
     /**
      * This function is run when the robot is first started up and should be
@@ -47,7 +47,7 @@ public class Robot extends IterativeRobot
     private void DoCommonUpdates()
     {
     	taskManager.DoCurrentTask();
-    	if (taskManager.OkToDrive())
+    	/*if (taskManager.OkToDrive())
     	{
     		try
     		{
@@ -57,10 +57,15 @@ public class Robot extends IterativeRobot
     		{
     			System.out.println("Failed to drive: " + ex.getMessage());
     		}
-    	}
+    	}*/
     	
+    	/*System.out.println(narrowLift.getSwitch().IsPressed() +  " " 
+    			+ narrowLift.getSwitch().HasJustBeenPressed());*/
+    	
+    	narrowLift.GoToPosition(1000.0);
     	narrowLift.Update();
-    	wideLift.Update();
+    	System.out.println(narrowLift.GetPosition());
+    	//wideLift.Update();
     	
     	// TODO:  Update all of our common objects
     	// Both target trackers
@@ -98,6 +103,15 @@ public class Robot extends IterativeRobot
     	
     	taskManager.ClearAllTasks();
     }
+    
+    /**
+     * Function called as fast as possible during operator control.
+     * Handles button presses only.
+     */
+    public void teleopContinuous()
+    {
+    	
+    }
 
     /**
      * This function is called periodically during operator control
@@ -106,6 +120,8 @@ public class Robot extends IterativeRobot
     {
     	DoCommonUpdates();
     	// TODO:  Respond to button presses, etc.
+    	// Test code to move lift
+    	
     }
     
     /**

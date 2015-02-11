@@ -7,7 +7,7 @@ import org.usfirst.frc.team3167.drive.RobotKinematics;
  */
 public abstract class Tracker 
 {
-	protected abstract void init();
+	public abstract void init();
 	
 	public abstract boolean seesTote();
 	

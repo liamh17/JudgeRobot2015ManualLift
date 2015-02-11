@@ -1,6 +1,7 @@
 package org.usfirst.frc.team3167.util;
 
 // libWPI imports
+import edu.wpi.first.wpilibj.CANJaguar.ControlMode;
 import edu.wpi.first.wpilibj.Jaguar;
 import edu.wpi.first.wpilibj.CANJaguar;
 import edu.wpi.first.wpilibj.Relay;
@@ -89,6 +90,24 @@ public class BangBangController
 	public void SetSpeed(double speed)
 	{
 		this.speed = speed;
+	}
+	
+	/**
+	 * Method for sending a signal to Jaguars on open control loop
+	 * 
+	 * @param cmd	setpoint
+	 */
+	public void DoControl(double cmd)
+	{
+		if(canJag != null)
+		{
+			System.out.println(cmd);
+			canJag.set(cmd);
+		}
+		else if(jag != null)
+		{
+			jag.set(cmd);
+		}
 	}
 
 	/**

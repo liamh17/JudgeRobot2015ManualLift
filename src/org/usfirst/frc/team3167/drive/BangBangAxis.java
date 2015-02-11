@@ -52,6 +52,8 @@ public class BangBangAxis
 	private final double normalStep;// [units]
 	private final double homingStep;// [units]
 	
+	private double cmdVel;
+	
 	public BangBangAxis(Jaguar motor, double normalSpeed, double normalAccel,
 			double homingSpeed, double homingAccel, DigitalSwitch homeSwitch,
 			double positionScale, double homeSwitchPosition, double tolerance, boolean reverse)
@@ -101,15 +103,26 @@ public class BangBangAxis
 		homingStep = CalculateStep(homingSpeed);
 	}
 	
+	public HomeState getState()
+	{
+		return homeState;
+	}
+	
 	private double CalculateStep(double velocity)
 	{
 		return velocity / RobotConfiguration.frequency;
 	}
 	
+	public DigitalSwitch getSwitch()
+	{
+		return homeSwitch;
+	}
+	
 	public void Update()
 	{
-		System.out.println("Digital Switch on Channel " + homeSwitch.getChannel() + ": " + homeSwitch.IsPressed());
+		//System.out.println("Digital Switch on Channel " + homeSwitch.getChannel() + ": " + homeSwitch.IsPressed());
 		double cmdVel = (cmdPosition - GetPosition()) * RobotConfiguration.frequency;
+
 		if (homeState != HomeState.Homed)
 		{
 			switch (homeState)
@@ -143,16 +156,21 @@ public class BangBangAxis
 					cmdPosition = bufferedCmdPosition;
 					cmdVel = 0.0;
 					cmdGenerator = new SecondOrderLimiter(normalSpeed, normalAccel, RobotConfiguration.frequency);
+					canMotor.setCurrentMode(CANJaguar.kQuadEncoder, RobotConfiguration.wheelEncoderPPR, 1.0, 0.0, 0.0);
 				}
 				else
 					cmdVel = -homingStep;
 				break;
 			}
+			this.cmdVel = cmdVel;
+			controller.DoControl((cmdVel/normalSpeed)*RobotConfiguration.frequency);
 		}
-		
-		cmdVel = cmdGenerator.Process(cmdVel);// TODO:  Fix this!
-		cmdPosition += cmdVel;
-		controller.DoControl(cmdPosition, GetPosition());
+		else
+		{
+			cmdVel = cmdGenerator.Process(cmdVel);// TODO:  Fix this!
+			this.cmdVel = cmdVel;
+			controller.DoControl(cmdPosition, GetPosition());
+		}
 	}
 	
 	public double GetPosition()
@@ -165,8 +183,13 @@ public class BangBangAxis
 		{
 			return canMotor.getPosition() * positionScale;// TODO:  Scaling required here?
 		}
-		
+		System.out.println("Both motors objects are null!");
 		return 0.0;
+	}
+	
+	public double getCmdVelocity()
+	{
+		return cmdVel;
 	}
 	
 	public void SetCmdPosition(double cmdPosition)
