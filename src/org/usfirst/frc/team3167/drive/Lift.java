@@ -12,9 +12,9 @@ public class Lift extends BangBangAxis
 	private static final double normalSpeed = 4.0;// [in/sec]
 	private static final double normalAccel = 4.0;// [in/sec^2]
 	
-	private static final double positionTolerance = 0.2;// [in]
+	private static final double positionTolerance = 0.3;// [in]
 	
-	private static final double encoderPositionScale = Math.PI*(1.45);// [in/rev] TODO:  Fix this
+	private static final double encoderPositionScale = (Math.PI*(1.45)*1.6);// [in/rev] pi * d
 	
 	private static final double bottom = 0;// [in]
 	private static final double aboveGroundTote = 0;// [in]

@@ -24,10 +24,10 @@ public class Robot extends IterativeRobot
 {
 	private HolonomicRobotDrive drive;
 	private Lift narrowLift = new Lift(RobotConfiguration.narrowToteLiftMotorID,
-			new DigitalSwitch(RobotConfiguration.narrowToteHomeChannel, false),
+			new DigitalSwitch(RobotConfiguration.narrowToteHomeChannel, true),
 			RobotConfiguration.narrowHomeSwitchHeight);
 	private Lift wideLift = new Lift(RobotConfiguration.wideToteLiftMotorID,
-			new DigitalSwitch(RobotConfiguration.wideToteHomeChannel, false),
+			new DigitalSwitch(RobotConfiguration.wideToteHomeChannel, true),
 			RobotConfiguration.wideHomeSwitchHeight);
 	
 	// TODO:  Add cameras and trackers
@@ -63,10 +63,12 @@ public class Robot extends IterativeRobot
     			+ narrowLift.getSwitch().HasJustBeenPressed());*/
     	
     	//narrowLift.GoToPosition(1000.0);
-    	narrowLift.Update();
-    	narrowLift.SetCmdPosition(8.0);
-    	//System.out.println(narrowLift.GetPosition());
-    	//wideLift.Update();
+    	//narrowLift.Update();
+    	//narrowLift.SetCmdPosition(30.0);
+    	System.out.println(wideLift.GetPosition());
+    	wideLift.Update();
+    	wideLift.SetCmdPosition(15.0);
+    	//System.out.println("IsPressed(): " + wideLift.getSwitch().IsPressed() + ", HasJustBeenPressed(): " + wideLift.getSwitch().HasJustBeenPressed());
     	
     	// TODO:  Update all of our common objects
     	// Both target trackers

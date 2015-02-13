@@ -47,11 +47,13 @@ public class BangBangAxis
 	
 	private final Jaguar motor;
 	private final Encoder encoder;
-	private final CANJaguar canMotor;
+	private CANJaguar canMotor;
 	
 	private final double normalStep;// [units]
 	private final double homingStep;// [units]
-		
+	
+	private double initPosition;
+				
 	public BangBangAxis(Jaguar motor, double normalSpeed, double normalAccel,
 			double homingSpeed, double homingAccel, DigitalSwitch homeSwitch,
 			double positionScale, double homeSwitchPosition, double tolerance, boolean reverse)
@@ -77,11 +79,11 @@ public class BangBangAxis
 		homingStep = CalculateStep(homingSpeed);
 	}
 	
-	public BangBangAxis(CANJaguar motor, double normalSpeed, double normalAccel,
+	public BangBangAxis(CANJaguar canMotor, double normalSpeed, double normalAccel,
 			double homingSpeed, double homingAccel, DigitalSwitch homeSwitch,
 			double positionScale, double homeSwitchPosition, double tolerance, boolean reverse)
 	{
-		this.canMotor = motor;
+		this.canMotor = canMotor;
 		this.normalSpeed = normalSpeed;
 		this.normalAccel = normalAccel;
 		this.homingSpeed = homingSpeed;
@@ -91,7 +93,7 @@ public class BangBangAxis
 		this.homeSwitchPosition = homeSwitchPosition;
 		bufferedCmdPosition = homeSwitchPosition;
 		
-		controller = new BangBangController(motor, tolerance, reverse);
+		controller = new BangBangController(canMotor, tolerance, reverse);
 		controller.SetSpeed(1.0);// Not actually speed, this just says we want to allow maximum command to jag if necessary
 		
 		this.motor = null;
@@ -154,12 +156,11 @@ public class BangBangAxis
 				System.out.println(homeState);
 				if (homeSwitch.HasJustBeenPressed())
 				{
+					initPosition = GetPosition();
 					homeState = HomeState.Homed;
 					position = homeSwitchPosition;
 					cmdPosition = bufferedCmdPosition;
 					cmdGenerator = new SecondOrderLimiter(normalSpeed, normalAccel, RobotConfiguration.frequency);
-					//canMotor.setCurrentMode(CANJaguar.kQuadEncoder, RobotConfiguration.wheelEncoderPPR, 1.0, 0.0, 0.0);
-					//canMotor.enableControl(homeSwitchPosition);
 				}
 				else
 					cmdVel = -homingStep;
@@ -174,23 +175,49 @@ public class BangBangAxis
 			//cmdVel = cmdGenerator.Process(cmdVel);// TODO:  Fix this!
 			//System.out.println("Post-state processing cmdVel: " + cmdVel);	
 			//cmdPosition += cmdVel/RobotConfiguration.frequency;
-			//System.out.println("cmdPosition: " + cmdPosition);	
-			controller.DoControl(cmdPosition, GetPosition());
+			//System.out.println("cmdPosition: " + cmdPosition);
+			if(!controller.inRange())
+			{
+				controller.SetSpeed(1.0);
+				controller.DoControl(cmdPosition, GetPosition());
+			}
+			else
+			{
+				controller.SetSpeed(0.25);
+				controller.DoControl(cmdPosition, GetPosition());
+			}
 		}
 		
 	}
 	
 	public double GetPosition()
 	{
-		if (motor != null)
+		if(homeState != HomeState.Homed)
 		{
-			return encoder.getRaw() * positionScale;// TODO:  Any scaling required here?
+			if (motor != null)
+			{
+				return encoder.getRaw() * positionScale;
+			}
+			else if (canMotor != null)
+			{
+				return canMotor.getPosition() * positionScale;
+			}
+			return 0.0;
 		}
-		else if (canMotor != null)
+		else
 		{
-			return canMotor.getPosition() * positionScale;// TODO:  Scaling required here?
+			if (motor != null)
+			{
+				return (encoder.getRaw() * positionScale) - (initPosition) 
+						+ homeSwitchPosition;
+			}
+			else if (canMotor != null)
+			{
+				return (canMotor.getPosition() * positionScale) - initPosition 
+						+ homeSwitchPosition;
+			}
+			return 0.0;
 		}
-		return 0.0;
 	}
 
 	

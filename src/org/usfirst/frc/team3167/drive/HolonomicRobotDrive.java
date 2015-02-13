@@ -175,7 +175,7 @@ public class HolonomicRobotDrive
             robotArray[i][0] =
                     (wheelList.Get(i).GetRotationAxisY() * Math.sin(beta)
                     - wheelList.Get(i).GetRotationAxisX() * Math.cos(beta) /
-                    denominator;
+                    denominator);
             robotArray[i][1] =
                     -(wheelList.Get(i).GetRotationAxisX() * Math.sin(beta) +
                     wheelList.Get(i).GetRotationAxisY() * Math.cos(beta)) /

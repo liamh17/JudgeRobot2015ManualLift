@@ -40,8 +40,8 @@ public class RobotConfiguration
 	public static final int wideToteHomeChannel = 8;
 	
 	// Lift geometry
-	public static final double narrowHomeSwitchHeight = 10;// [in]
-	public static final double wideHomeSwitchHeight = 10;// [in]
+	public static final double narrowHomeSwitchHeight = 8.5;// [in]
+	public static final double wideHomeSwitchHeight = 5.875;// [in]
 	
 	public static final double sprocketPitchDiameter = 1.45; // [in]
 } 

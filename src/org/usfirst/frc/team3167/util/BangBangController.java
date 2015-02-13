@@ -25,7 +25,8 @@ public class BangBangController
 	private final boolean reverseCmd;
 
 	private double speed = 1.0;
-
+	private boolean inRange = false;
+	
 	// Methods
 	/**
 	 * Constructor for driving a Relay object.
@@ -85,7 +86,7 @@ public class BangBangController
 		jag = null;
 		relay = null;
 
-		canJag.setPercentMode(CANJaguar.kQuadEncoder, -1*RobotConfiguration.wheelEncoderPPR);
+		canJag.setPercentMode(CANJaguar.kQuadEncoder, RobotConfiguration.wheelEncoderPPR);
 		canJag.enableControl();
 		
 		tolerance = _tolerance;
@@ -111,6 +112,11 @@ public class BangBangController
 			jag.set(cmd);
 		}
 	}
+	
+	public boolean inRange()
+	{
+		return inRange;
+	}
 
 	/**
 	 * Method for closing the control loop.
@@ -120,6 +126,7 @@ public class BangBangController
 	 */
 	public void DoControl(double cmd, double act)
 	{
+		inRange = Math.abs(cmd - act) <= 1.5*tolerance;
 		// Handle relay version first
 		if (relay != null)
 		{
