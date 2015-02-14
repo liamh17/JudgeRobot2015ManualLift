@@ -659,6 +659,21 @@ public class Wheel
     {
         return posX;
     }
+    
+    public double getKP()
+    {
+    	return canMotor.getP();
+    }
+    
+    public double getKI()
+    {
+    	return canMotor.getI();
+    }
+    
+    public double getKD()
+    {
+    	return canMotor.getD();
+    }
 
 	/**
 	 * Returns the Y position of the wheel (specified when constructed).
@@ -745,6 +760,16 @@ public class Wheel
 	public Jaguar GetMotor()
 	{
 		return motor;
+	}
+	
+	public double getGearRatio()
+	{
+		return gearRatio;
+	}
+	
+	public CANJaguar getCANMotor()
+	{
+		return canMotor;
 	}
 
 	/**

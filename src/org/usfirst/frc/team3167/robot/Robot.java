@@ -12,6 +12,8 @@ import org.usfirst.frc.team3167.util.JoystickButton;
 import edu.wpi.first.wpilibj.CANJaguar;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.Preferences;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -33,6 +35,11 @@ public class Robot extends IterativeRobot
 	// TODO:  Add cameras and trackers
 	private TaskManager taskManager = new TaskManager();
 	private Joystick driveJoystick = new Joystick(1);
+	
+	private double testSig = 0.0;
+	
+	private CANJaguar jag;
+	Preferences prefs = Preferences.getInstance();
 
     /**
      * This function is run when the robot is first started up and should be
@@ -40,18 +47,25 @@ public class Robot extends IterativeRobot
      */
     public void robotInit() 
     {
-    	BuildRobotDrive();
-    	// TODO:  Create all the stuff here
+    	testSig = prefs.getDouble("testSig", 0.0);
+    	//prefs.putDouble("Kp", 1.0);
+    	//prefs.putDouble("Ki", 0.0);
+    	//BuildRobotDrive();
+    	// TODO:  Create all the stuff herej
+    	jag = new CANJaguar(6);
+    	jag.setPercentMode(CANJaguar.kQuadEncoder, 360);
     }
     
     private void DoCommonUpdates()
     {
-    	taskManager.DoCurrentTask();
-    	/*if (taskManager.OkToDrive())
+    	//updateSmartDashboard();
+    	jag.set(0.4);
+    	/*taskManager.DoCurrentTask();
+    	if (taskManager.OkToDrive())
     	{
     		try
     		{
-    			drive.Drive(driveJoystick);
+    			drive.Drive(0.0, testSig, 0.0);
     		}
     		catch (Exception ex)
     		{
@@ -65,9 +79,9 @@ public class Robot extends IterativeRobot
     	//narrowLift.GoToPosition(1000.0);
     	/*narrowLift.Update();
     	narrowLift.SetCmdPosition(30.0);*/
-    	System.out.println(wideLift.GetPosition());
-    	wideLift.Update();
-    	wideLift.SetCmdPosition(15.0);
+    	//System.out.println(wideLift.GetPosition());
+    	//wideLift.Update();
+    	//wideLift.SetCmdPosition(15.0);
     	//System.out.println("IsPressed(): " + wideLift.getSwitch().IsPressed() + ", HasJustBeenPressed(): " + wideLift.getSwitch().HasJustBeenPressed());
     	
     	// TODO:  Update all of our common objects
@@ -76,6 +90,17 @@ public class Robot extends IterativeRobot
     	
     	// CAN objects - this line sends the commands
     	CANJaguar.updateSyncGroup(RobotConfiguration.wheelCANSyncGroup);
+    }
+    
+    public void updateSmartDashboard()
+    {
+    	SmartDashboard.putNumber("Left Front Wheel KP", drive.GetWheel(0).getKP());
+    	SmartDashboard.putNumber("Left Front Wheel KI", drive.GetWheel(0).getKI()); 
+    	SmartDashboard.putNumber("Left Front Wheel KD", drive.GetWheel(0).getKD()); 
+    	SmartDashboard.putNumber("testSig", testSig); 
+    	
+    	SmartDashboard.putNumber("Left Front Wheel speed", drive.GetWheel(0).GetWheelVelocity());
+    	SmartDashboard.putNumber("Left Front Wheel command speed", drive.GetWheel(0).getCANMotor().get() / drive.GetWheel(0).getGearRatio() * Conversions.RPMToRadPerSec);
     }
     
     public void autonomousInit()
@@ -124,7 +149,6 @@ public class Robot extends IterativeRobot
     	DoCommonUpdates();
     	// TODO:  Respond to button presses, etc.
     	// Test code to move lift
-    	
     }
     
     /**
@@ -137,18 +161,18 @@ public class Robot extends IterativeRobot
     public void disabledInit()
     {
     	// Call test print statements to execute only one time
-    	drive.PrintTest();
+    	//drive.PrintTest();
     }
     
     public void disabledPeriodic()
     {
-    	System.out.println("X = " + driveJoystick.getX());
+    	/*System.out.println("X = " + driveJoystick.getX());
     	System.out.println("Y = " + driveJoystick.getY());
-    	System.out.println("Z = " + driveJoystick.getTwist());
+    	System.out.println("Z = " + driveJoystick.getTwist());*/
     	// Call test print statements to execute every cycle
     	//System.out.println(GenerateLiftTestString("Narrow", narrowLift));
     	System.out.println(GenerateLiftTestString("Wide", wideLift));
-    	System.out.println(drive.GetWheelAngleString());
+    	//System.out.println(drive.GetWheelAngleString());
     	CANJaguar.updateSyncGroup(RobotConfiguration.wheelCANSyncGroup);
     }
     
@@ -181,25 +205,25 @@ public class Robot extends IterativeRobot
     	drive.AddWheel(new Wheel(-halfTrack, halfWheelbase, leftWheelAxisX, 0, rollerAngle1,
     			RobotConfiguration.wheelRadius, gearRatio,
     			maxWheelSpeed, RobotConfiguration.leftFrontMotorID,
-    			RobotConfiguration.wheelKp, RobotConfiguration.wheelKi, RobotConfiguration.wheelEncoderPPR));
+    			prefs.getDouble("Kp", 1.0), prefs.getDouble("Ki", 0.0), RobotConfiguration.leftFrontWheelEncoderPPR));
     	
     	// Right front
     	drive.AddWheel(new Wheel(halfTrack, halfWheelbase, rightWheelAxisX, 0, rollerAngle2,
     			RobotConfiguration.wheelRadius, gearRatio,
     			maxWheelSpeed, RobotConfiguration.rightFrontMotorID, 
-    			RobotConfiguration.wheelKp, RobotConfiguration.wheelKi, RobotConfiguration.wheelEncoderPPR));
+    			/*RobotConfiguration.wheelKp*/ 0.0, RobotConfiguration.wheelKi, RobotConfiguration.rightFrontWheelEncoderPPR));
     	
     	// Left rear
     	drive.AddWheel(new Wheel(-halfTrack, -halfWheelbase, leftWheelAxisX, 0, rollerAngle2,
     			RobotConfiguration.wheelRadius, gearRatio,
     			maxWheelSpeed, RobotConfiguration.leftRearMotorID,
-    			RobotConfiguration.wheelKp, RobotConfiguration.wheelKi, RobotConfiguration.wheelEncoderPPR));
+    			/*RobotConfiguration.wheelKp*/ 0.0, RobotConfiguration.wheelKi, RobotConfiguration.leftBackWheelEncoderPPR));
     	
     	// Right rear
     	drive.AddWheel(new Wheel(halfTrack, -halfWheelbase, rightWheelAxisX, 0, rollerAngle1,
     			RobotConfiguration.wheelRadius, gearRatio,
     			maxWheelSpeed, RobotConfiguration.rightRearMotorID,
-    			RobotConfiguration.wheelKp, RobotConfiguration.wheelKi, RobotConfiguration.wheelEncoderPPR));
+    			/*RobotConfiguration.wheelKp*/ 0.0, RobotConfiguration.wheelKi, RobotConfiguration.rightBackWheelEncoderPPR));
     	
     	// Add acceleration limits
     	drive.SetFrictionCoefficient(0.7);// Creates acceleration limit

@@ -25,6 +25,10 @@ public class RobotConfiguration
 	public static final double wheelKi = 0.0;
 	
 	public static final int wheelEncoderPPR = 360;
+	public static final int rightFrontWheelEncoderPPR = 333;
+	public static final int rightBackWheelEncoderPPR = 153;
+	public static final int leftFrontWheelEncoderPPR = 348;
+	public static final int leftBackWheelEncoderPPR = 360;
 	
 	// CAN Node IDs
 	public static final int leftFrontMotorID = 5;

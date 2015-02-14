@@ -17,10 +17,10 @@ public class Lift extends BangBangAxis
 	private static final double bottom = 0;// [in]
 	private static final double aboveGroundTote = 0;// [in]
 	
-	public Lift(int canID, DigitalSwitch homeSwitch, double homeSwitchPosition, double sprocketPitchDiameter)
+	public Lift(int canID, DigitalSwitch homeSwitch, double homeSwitchPosition, double sprocketPitchCircumference)
 	{
 		super(new CANJaguar(canID), normalSpeed, normalAccel, homingSpeed, homingAccel, homeSwitch,
-				sprocketPitchDiameter, homeSwitchPosition, positionTolerance, false);
+				sprocketPitchCircumference, homeSwitchPosition, positionTolerance, false);
 	}
 	
 	public void GoToPosition(double endPosition)
