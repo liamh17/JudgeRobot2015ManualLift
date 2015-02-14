@@ -415,18 +415,13 @@ public class HolonomicRobotDrive
     public void Drive(Joystick stick)
             throws Exception
     {
-		// NOTE:  Added yaw control 2/23/2012 to help fix weight distribution
-		// problem.  Modifies yaw cmd prior to calculating wheel commands
-		double yawCmd = ApplyDeadband(stick.getTwist() * omegaMax);
-		/*yawCmd = yawController.DoControl(yawCmd,
-				-yawGyro.getRate() * Math.PI / 180.0);*/
-
         // Call the normal drive method with the joystick values
 		// Joystick X axis is left-right, positive right (no change necessary)
 		// Joystick Y axis if fore-aft, positive aft (requires sign change)
 		// Joystick twist is positive nose right (requires sign change)
-        Drive(yawCmd, ApplyDeadband(-stick.getY()) * vYMax,
-				ApplyDeadband(-stick.getX()) * vXMax);
+        Drive(ApplyDeadband(-stick.getY()) * vYMax,
+        	  ApplyDeadband(stick.getX()) * vXMax,
+        	  ApplyDeadband(-stick.getTwist() * omegaMax));
     }
 
     /**
@@ -843,11 +838,45 @@ public class HolonomicRobotDrive
 		int i;
 		for (i = 0; i < wheelList.Size(); i++)
 		{
-			// Check each wheel speed agains the threshold
+			// Check each wheel speed against the threshold
 			if (!wheelList.Get(i).IsStopped())
 				return false;
 		}
 
 		return true;
+	}
+	
+	public void PrintTest()
+	{
+		Matrix testRobotSpeed = new Matrix(3, 1);
+		testRobotSpeed.MakeZero();
+		
+		System.out.println("Wheel Velocities for Vx = 1, Vy = 0, Omega = 0 (move right):");
+		testRobotSpeed.SetElement(0, 0, 1);
+		System.out.println(robotMatrix.Multiply(testRobotSpeed).Print());
+		System.out.println("");
+		
+		System.out.println("Wheel Velocities for Vx = 0, Vy = 1, Omega = 0 (move right):");
+		testRobotSpeed.SetElement(0, 0, 0);
+		testRobotSpeed.SetElement(1, 0, 1);
+		System.out.println(robotMatrix.Multiply(testRobotSpeed).Print());
+		System.out.println("");
+		
+		System.out.println("Wheel Velocities for Vx = 0, Vy = 0, Omega = 1 (move right):");
+		testRobotSpeed.SetElement(1, 0, 0);
+		testRobotSpeed.SetElement(2, 0, 1);
+		System.out.println(robotMatrix.Multiply(testRobotSpeed).Print());
+		System.out.println("");
+	}
+	
+	public String GetWheelAngleString()
+	{
+		String s = "";
+		int i;
+		for (i = 0; i < wheelList.Size(); i++)
+		{
+			s += i + " => " + wheelList.Get(i).GetWheelAngle() + " deg; ";
+		}
+		return s;
 	}
 }

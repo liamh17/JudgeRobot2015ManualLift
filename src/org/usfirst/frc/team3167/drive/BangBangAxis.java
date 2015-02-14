@@ -228,4 +228,9 @@ public class BangBangAxis
 		else
 			bufferedCmdPosition = cmdPosition;
 	}
+	
+	public double GetEncoderAngle()
+	{
+		return canMotor.getPosition() * 360.;
+	}
 }

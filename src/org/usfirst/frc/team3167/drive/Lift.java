@@ -14,15 +14,13 @@ public class Lift extends BangBangAxis
 	
 	private static final double positionTolerance = 0.3;// [in]
 	
-	private static final double encoderPositionScale = (Math.PI*(1.45)*1.6);// [in/rev] pi * d
-	
 	private static final double bottom = 0;// [in]
 	private static final double aboveGroundTote = 0;// [in]
 	
-	public Lift(int canID, DigitalSwitch homeSwitch, double homeSwitchPosition)
+	public Lift(int canID, DigitalSwitch homeSwitch, double homeSwitchPosition, double sprocketPitchDiameter)
 	{
 		super(new CANJaguar(canID), normalSpeed, normalAccel, homingSpeed, homingAccel, homeSwitch,
-				encoderPositionScale, homeSwitchPosition, positionTolerance, false);
+				sprocketPitchDiameter, homeSwitchPosition, positionTolerance, false);
 	}
 	
 	public void GoToPosition(double endPosition)

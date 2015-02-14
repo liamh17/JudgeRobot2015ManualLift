@@ -12,9 +12,9 @@ public class RobotConfiguration
 	public static final byte wheelCANSyncGroup = 1;
 	
 	// Wheel geometry
-	public static final double wheelRadius = 2.0;// [in]
-	public static final double wheelbase = 10.0;// [in]
-	public static final double track = 20.0;// [in]
+	public static final double wheelRadius = 3.0;// [in]
+	public static final double wheelbase = 11.0;// [in]
+	public static final double track = 24.0;// [in]
 	public static final double rollerAngle = 45.0;// [deg]
 	
 	public static final double wheelGearboxRatio = 10.0;// [-]
@@ -43,5 +43,6 @@ public class RobotConfiguration
 	public static final double narrowHomeSwitchHeight = 8.5;// [in]
 	public static final double wideHomeSwitchHeight = 5.875;// [in]
 	
-	public static final double sprocketPitchDiameter = 1.45; // [in]
+	// For size 35 chain, count number of teeth on sprocket and multiply by 0.375
+	public static final double sprocketPitchCircumference = 5.625; // [in]
 } 

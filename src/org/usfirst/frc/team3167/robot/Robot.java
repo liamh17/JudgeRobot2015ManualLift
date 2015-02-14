@@ -25,10 +25,10 @@ public class Robot extends IterativeRobot
 	private HolonomicRobotDrive drive;
 	private Lift narrowLift = new Lift(RobotConfiguration.narrowToteLiftMotorID,
 			new DigitalSwitch(RobotConfiguration.narrowToteHomeChannel, true),
-			RobotConfiguration.narrowHomeSwitchHeight);
+			RobotConfiguration.narrowHomeSwitchHeight, RobotConfiguration.sprocketPitchCircumference);
 	private Lift wideLift = new Lift(RobotConfiguration.wideToteLiftMotorID,
 			new DigitalSwitch(RobotConfiguration.wideToteHomeChannel, true),
-			RobotConfiguration.wideHomeSwitchHeight);
+			RobotConfiguration.wideHomeSwitchHeight, RobotConfiguration.sprocketPitchCircumference);
 	
 	// TODO:  Add cameras and trackers
 	private TaskManager taskManager = new TaskManager();
@@ -63,8 +63,8 @@ public class Robot extends IterativeRobot
     			+ narrowLift.getSwitch().HasJustBeenPressed());*/
     	
     	//narrowLift.GoToPosition(1000.0);
-    	//narrowLift.Update();
-    	//narrowLift.SetCmdPosition(30.0);
+    	/*narrowLift.Update();
+    	narrowLift.SetCmdPosition(30.0);*/
     	System.out.println(wideLift.GetPosition());
     	wideLift.Update();
     	wideLift.SetCmdPosition(15.0);
@@ -134,41 +134,70 @@ public class Robot extends IterativeRobot
     {
     }
     
+    public void disabledInit()
+    {
+    	// Call test print statements to execute only one time
+    	drive.PrintTest();
+    }
+    
+    public void disabledPeriodic()
+    {
+    	System.out.println("X = " + driveJoystick.getX());
+    	System.out.println("Y = " + driveJoystick.getY());
+    	System.out.println("Z = " + driveJoystick.getTwist());
+    	// Call test print statements to execute every cycle
+    	//System.out.println(GenerateLiftTestString("Narrow", narrowLift));
+    	System.out.println(GenerateLiftTestString("Wide", wideLift));
+    	System.out.println(drive.GetWheelAngleString());
+    	CANJaguar.updateSyncGroup(RobotConfiguration.wheelCANSyncGroup);
+    }
+    
+    private String GenerateLiftTestString(String name, Lift lift)
+    {
+    	String s = name;
+    	s += " Home Switch = " + lift.getSwitch().IsPressed() + "; ";
+    	s += " Position = " + lift.GetPosition() + " in; ";
+    	s += " Encoder = " + lift.GetEncoderAngle() + " deg";
+    	return s;
+    }
+    
     private void BuildRobotDrive()
     {
     	drive = new HolonomicRobotDrive(RobotConfiguration.frequency);
     	
+    	double maxSpeedScale = 0.8;// Limit the speed because we know we can't actually reach motor free-running speed
     	double maxWheelSpeed = RobotConfiguration.wheelMotorMaxSpeed
     			/ RobotConfiguration.wheelGearboxRatio
-    			* Conversions.RPMToRadPerSec;// [rad/sec]
+    			* Conversions.RPMToRadPerSec * maxSpeedScale;// [rad/sec]
     	double halfTrack = RobotConfiguration.track / 2;// [in]
     	double halfWheelbase = RobotConfiguration.wheelbase / 2;// [in]
-    	double leftWheelAxisX = 1;
+    	double leftWheelAxisX = -1;
     	double rightWheelAxisX = -leftWheelAxisX;
     	double rollerAngle1 = RobotConfiguration.rollerAngle;
     	double rollerAngle2 = -rollerAngle1;
+    	double gearRatio = 1;// 1 because the encoder rotates with the wheel, not the motor
     	
     	// Left front
     	drive.AddWheel(new Wheel(-halfTrack, halfWheelbase, leftWheelAxisX, 0, rollerAngle1,
-    			RobotConfiguration.wheelRadius, /*RobotConfiguration.wheelGearboxRatio*/1,
+    			RobotConfiguration.wheelRadius, gearRatio,
     			maxWheelSpeed, RobotConfiguration.leftFrontMotorID,
     			RobotConfiguration.wheelKp, RobotConfiguration.wheelKi, RobotConfiguration.wheelEncoderPPR));
     	
     	// Right front
     	drive.AddWheel(new Wheel(halfTrack, halfWheelbase, rightWheelAxisX, 0, rollerAngle2,
-    			RobotConfiguration.wheelRadius, /*RobotConfiguration.wheelGearboxRatio*/1,
+    			RobotConfiguration.wheelRadius, gearRatio,
     			maxWheelSpeed, RobotConfiguration.rightFrontMotorID, 
     			RobotConfiguration.wheelKp, RobotConfiguration.wheelKi, RobotConfiguration.wheelEncoderPPR));
     	
     	// Left rear
     	drive.AddWheel(new Wheel(-halfTrack, -halfWheelbase, leftWheelAxisX, 0, rollerAngle2,
-    			RobotConfiguration.wheelRadius, /*RobotConfiguration.wheelGearboxRatio*/1,
+    			RobotConfiguration.wheelRadius, gearRatio,
     			maxWheelSpeed, RobotConfiguration.leftRearMotorID,
     			RobotConfiguration.wheelKp, RobotConfiguration.wheelKi, RobotConfiguration.wheelEncoderPPR));
     	
     	// Right rear
     	drive.AddWheel(new Wheel(halfTrack, -halfWheelbase, rightWheelAxisX, 0, rollerAngle1,
-    			RobotConfiguration.wheelRadius, /*RobotConfiguration.wheelGearboxRatio*/1,
+    			RobotConfiguration.wheelRadius, gearRatio,
     			maxWheelSpeed, RobotConfiguration.rightRearMotorID,
     			RobotConfiguration.wheelKp, RobotConfiguration.wheelKi, RobotConfiguration.wheelEncoderPPR));
     	

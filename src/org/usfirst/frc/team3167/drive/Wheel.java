@@ -22,6 +22,7 @@ import edu.wpi.first.wpilibj.Encoder;
 import org.usfirst.frc.team3167.util.PIDControllerII;
 import org.usfirst.frc.team3167.util.SecondOrderFilter;
 import org.usfirst.frc.team3167.robot.RobotConfiguration;
+import org.usfirst.frc.team3167.util.Conversions;
 
 /**
  * Class representing the drivetrain from one motor to a wheel (or wheels).
@@ -59,6 +60,8 @@ public class Wheel
     // The controller object and control type
     private PIDControllerII controller;
     private final byte controlType;
+    
+    private final double gearRatio;
 
     // The motor object
     private final Jaguar motor;
@@ -102,6 +105,7 @@ public class Wheel
         posY = _posY;
         rollerAngle = _rollerAngle;
         radius = _radius;
+        gearRatio = 1;
 
         maxRotationRate = maxSpeed;
 
@@ -157,6 +161,7 @@ public class Wheel
         posY = _posY;
         rollerAngle = _rollerAngle;
         radius = _radius;
+        gearRatio = 1;
 
         maxRotationRate = maxSpeed;
 
@@ -212,6 +217,7 @@ public class Wheel
         rollerAngle = _rollerAngle;
         radius = _radius;
 		maxRotationRate = _maxRotationRate;
+		this.gearRatio = gearRatio;
 
         controlType = CONTROL_CLOSED_LOOP;
 
@@ -292,6 +298,7 @@ public class Wheel
         radius = _radius;
 		freq = _freq;
 		maxRotationRate = _maxRotationRate;
+		this.gearRatio = gearRatio;
 
         controlType = CONTROL_CLOSED_LOOP;
 
@@ -376,6 +383,7 @@ public class Wheel
         radius = _radius;
 		freq = _freq;
 		maxRotationRate = _maxRotationRate;
+		this.gearRatio = gearRatio;
 
         controlType = CONTROL_CLOSED_LOOP;
 
@@ -461,6 +469,7 @@ public class Wheel
         radius = _radius;
 		freq = _freq;
 		maxRotationRate = _maxRotationRate;
+		this.gearRatio = gearRatio;
 
         controlType = CONTROL_CLOSED_LOOP;
 
@@ -547,6 +556,7 @@ public class Wheel
         radius = _radius;
 		freq = _freq;
 		maxRotationRate = _maxRotationRate;
+		this.gearRatio = gearRatio;
 
         controlType = CONTROL_CLOSED_LOOP;
 
@@ -624,8 +634,9 @@ public class Wheel
         	{
         		try
         		{
-        			wheelVelocity = canMotor.getSpeed();// TODO:  We'll likely need some kind of scaling here
-        			canMotor.set(cmdOmega, RobotConfiguration.wheelCANSyncGroup);// TODO:  We'll likely need some kind of scaling here
+        			// canMotor.getSpeed() is in RPM; convert to rad/sec
+        			wheelVelocity = canMotor.getSpeed() / gearRatio * Conversions.RPMToRadPerSec;
+        			canMotor.set(cmdOmega * Conversions.RadPerSecToRPM * gearRatio, RobotConfiguration.wheelCANSyncGroup);
         		}
         		catch (Exception ex)
         		{
@@ -774,5 +785,10 @@ public class Wheel
     public String getDescription()
     {
         return "Wheel controller " + motor.getChannel();
+    }
+    
+    public double GetWheelAngle()// in degrees
+    {
+    	return canMotor.getPosition() * 360.;
     }
 }
