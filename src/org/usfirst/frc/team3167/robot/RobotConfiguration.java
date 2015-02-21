@@ -52,6 +52,9 @@ public class RobotConfiguration
 
 	public static final double widePickupToteHeight = -9.875; // [in]
 	public static final double wideRaiseToteToStack = -25.0; // [in]
-
 	public static final double wideStackingToteOnTote = -18.0;
+
+	public static final double narrowPickupToteHeight = 9.875;
+	public static final double narrowRaiseToteToStack = 25.0;
+	public static final double narrowStackingToteOnTote = 18.0;
 } 

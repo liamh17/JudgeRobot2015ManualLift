@@ -161,6 +161,23 @@ public class Robot extends IterativeRobot
     	{
     		wideLift.GoToPosition(RobotConfiguration.wideStackingToteOnTote);
     	}
+    	
+    	if(driveJoystick0.getRawButton(3))
+    	{
+    		narrowLift.GoToPosition(RobotConfiguration.narrowHomeSwitchHeight);
+    	}
+    	else if(driveJoystick0.getRawButton(5))
+    	{
+    		narrowLift.GoToPosition(RobotConfiguration.narrowPickupToteHeight); // Pick up a tote by rasing 4 in
+    	}
+    	else if(driveJoystick0.getRawButton(4))
+    	{
+    		narrowLift.GoToPosition(RobotConfiguration.narrowRaiseToteToStack); // Pick up a tote by rasing 4 in
+    	}
+    	else if(driveJoystick0.getRawButton(6))
+    	{
+    		narrowLift.GoToPosition(RobotConfiguration.narrowStackingToteOnTote);
+    	}
     }
     
     /**
