@@ -5,6 +5,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.List;
 
 import org.opencv.calib3d.Calib3d;
 import org.opencv.core.Core;
@@ -16,6 +17,7 @@ import org.opencv.core.MatOfKeyPoint;
 import org.opencv.core.MatOfPoint2f;
 import org.opencv.core.MatOfPoint3f;
 import org.opencv.core.Point;
+import org.opencv.core.Point3;
 import org.opencv.features2d.DMatch;
 import org.opencv.features2d.DescriptorExtractor;
 import org.opencv.features2d.DescriptorMatcher;
@@ -25,6 +27,7 @@ import org.opencv.features2d.KeyPoint;
 import org.opencv.highgui.Highgui;
 import org.usfirst.frc.team3167.drive.RobotKinematics;
 
+import edu.wpi.first.wpilibj.image.ColorImage;
 import edu.wpi.first.wpilibj.image.HSLImage;
 import edu.wpi.first.wpilibj.image.MonoImage;
 import edu.wpi.first.wpilibj.image.NIVisionException;
@@ -60,13 +63,13 @@ public class LogoTracker extends Tracker
 	private DescriptorExtractor extractor;   	 // SIFT description extractor
 	private Mat templateDescriptors;		 	 // Mat of descriptors extracted from the template image
 	
-	private KeyPoint[] imageKeypoints;		 	 // Mat of keypoints in the most recent image we viewed
+	private MatOfKeyPoint imageKeypoints;		 	 // Mat of keypoints in the most recent image we viewed
 	
 	private ArrayList<DMatch> matches;		     // List of matches in most recent image
 	private static final double LOGO_LENGTH = 3.0;  // [in]
 	private static final double LOGO_HEIGHT = 3.0 + (5.0/8.0); // [in]
 	
-	private static MatOfDouble cameraMatrix;
+	private static Mat cameraMatrix;
 	private static MatOfDouble dist;
 
 	/**
@@ -89,14 +92,15 @@ public class LogoTracker extends Tracker
 		imageKeypoints = null;				// No keypoints have been found yet
 		matches = new ArrayList<DMatch>();	
 
-		cameraMatrix = new MatOfDouble(3,3);
+		cameraMatrix = new MatOfDouble();
+		cameraMatrix = MatOfDouble.zeros(3, 3, CvType.CV_64F);
 		cameraMatrix.put(0, 0, 596.01281738);
 		cameraMatrix.put(0, 2, 326.04810079);
 		cameraMatrix.put(1, 1, 589.50994873);
 		cameraMatrix.put(1, 2, 247.26001282);
 		cameraMatrix.put(2, 2, 1.0);
 		
-		dist = new MatOfDouble(1,5);
+		dist = new MatOfDouble(MatOfDouble.zeros(5, 1, CvType.CV_64F));
 		dist.put(0, 0, -0.46737483);
 		dist.put(0, 1,  0.26953156);
 		dist.put(0, 2, -0.00093982);
@@ -174,8 +178,8 @@ public class LogoTracker extends Tracker
 			int numNeighbors = 0;
 			
 			// Get the coordinates of the image keypoint for this match
-			int x = (int)imageKeypoints[match.trainIdx].pt.x;
-			int y = (int)imageKeypoints[match.trainIdx].pt.y;
+			int x = (int)imageKeypoints.toArray()[match.trainIdx].pt.x;
+			int y = (int)imageKeypoints.toArray()[match.trainIdx].pt.y;
 			
 			// Iterate over all matches
 			for(DMatch match2 : matches)
@@ -184,8 +188,8 @@ public class LogoTracker extends Tracker
 				if(match != match2)
 				{
 					// Get the coordinates of the keypoint for match2
-					int x2 = (int)imageKeypoints[match2.trainIdx].pt.x;
-					int y2 = (int)imageKeypoints[match2.trainIdx].pt.y;
+					int x2 = (int)imageKeypoints.toArray()[match2.trainIdx].pt.x;
+					int y2 = (int)imageKeypoints.toArray()[match2.trainIdx].pt.y;
 					
 					// Calculuate the squared distance between the two keypoints
 					double distanceSquared = (x2 - x)*(x2 - x) + (y2 - y)*(y2 - y);
@@ -232,14 +236,18 @@ public class LogoTracker extends Tracker
 		Mat tvec = new Mat();
 		
 		MatOfPoint2f imagePoints = new MatOfPoint2f();
+		List<Point> iPoints = new ArrayList<Point>();
 		MatOfPoint3f objectPoints = findObjectPoints();
 		
 		for(int i = 0; i < matches.size(); i++)
 		{
 			DMatch match = matches.get(i);
-			double[] point = {imageKeypoints[match.queryIdx].pt.x, imageKeypoints[match.queryIdx].pt.y};
-			imagePoints.put(0, i, point);
+			double [] point = new double[2];
+			point[0] = imageKeypoints.toList().get(match.queryIdx).pt.x;
+			point[1] = imageKeypoints.toList().get(match.queryIdx).pt.y;
+			iPoints.add(new Point(point));
 		}
+		imagePoints.fromList(iPoints);
 		
 		/* Object points are the point on the logo in a 'logo coordinate system'.  It uses the same
 		   units that we want to know the robot position in, and consist of an x,y coordinate 
@@ -253,14 +261,14 @@ public class LogoTracker extends Tracker
 		Calib3d.Rodrigues(R.t(), cameraRotationVector);
 		
 		MatOfDouble cameraTranslationVector = new MatOfDouble();
-		Core.gemm(R, tvec, -1, null, 0, cameraTranslationVector);
+		Core.gemm(R, tvec, -1, tvec, 0, cameraTranslationVector);// Second tvec argument could be any matrix with the right size; the following argument must then be 0 to scale this dummy matrix away
 		
 		RobotKinematics pose = new RobotKinematics();
 		pose.x = cameraTranslationVector.get(0, 0)[0];
-		pose.y = cameraTranslationVector.get(0, 1)[0];
+		pose.y = cameraTranslationVector.get(1, 0)[0];
 		pose.theta = cameraRotationVector.get(0,0)[0]*cameraRotationVector.get(0,0)[0]
-				+ cameraRotationVector.get(0,1)[0]*cameraRotationVector.get(0,1)[0]
-				+ cameraRotationVector.get(0,2)[0]*cameraRotationVector.get(0,2)[0];
+				+ cameraRotationVector.get(1,0)[0]*cameraRotationVector.get(1,0)[0]
+				+ cameraRotationVector.get(2,0)[0]*cameraRotationVector.get(2,0)[0];
 		
 		return pose;
 	}
@@ -273,10 +281,9 @@ public class LogoTracker extends Tracker
 	 */
 	private Mat getImage() throws NIVisionException
 	{
-		MonoImage image = camera.getImage().getLuminancePlane();
+				
 		
 		// TODO: Convert the monoimage into an OpenCV mat
-		
 		// Read the image as a Mat using OpenCV
 		//return Highgui.imread("\\home\\lvuser\\image.jpg", 0);
 		return null;
@@ -304,7 +311,7 @@ public class LogoTracker extends Tracker
 		matcher.match(templateDescriptors, imageDescriptors, matches);
 				
 		// Convert imageKeypoints and matchArray to arrays for the class
-		this.imageKeypoints = imageKeypoints.toArray();
+		this.imageKeypoints = imageKeypoints;
 		DMatch[] matchArray = matches.toArray();
 		
 		// Sort the matches, so that the ones with the lowest distance are first
@@ -329,17 +336,20 @@ public class LogoTracker extends Tracker
 	private MatOfPoint3f findObjectPoints()
 	{
 		MatOfPoint3f objectPoints = new MatOfPoint3f();
+		List<Point3> oPoints = new ArrayList<Point3>();
 		for(int i = 0; i < matches.size(); i++)
 		{
 			DMatch match = matches.get(i);
 			
 			double x = templateKeypoints.toArray()[match.queryIdx].pt.x;
-			double y = templateKeypoints.toArray()[match.queryIdx].pt.y;			
+			double y = templateKeypoints.toArray()[match.queryIdx].pt.y;
 			
-			double[] pointDouble = {(x/138.0)*LOGO_LENGTH, 1 - (y/124.0)*LOGO_HEIGHT, 0};
-			objectPoints.put(0, i, pointDouble);
+			double[] point = {(x/138.0)*LOGO_LENGTH, 1 - (y/124.0)*LOGO_HEIGHT, 0};
+			//objectPoints.put(0, i, pointDouble);
+			oPoints.add(new Point3(point));
 		}
 		
+		objectPoints.fromList(oPoints);
 		return objectPoints;
 	} 
 }
