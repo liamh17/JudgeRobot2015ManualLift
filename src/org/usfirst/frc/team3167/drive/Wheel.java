@@ -118,11 +118,11 @@ public class Wheel
 
         // Create the motor object
         canMotor = new CANJaguar(canID);
-        //canMotor.setPercentMode();
+        canMotor.setPercentMode();
         //canMotor.configNeutralMode(CANJaguar.NeutralMode.Brake);
         //canMotor.setExpiration(0.1);
         //canMotor.setSafetyEnabled(true);
-        //canMotor.enableControl();//??
+        canMotor.enableControl();
         
         System.out.println("Configuring Open-Loop CAN Jaguar ID " + canID
         		+ "; found FW version " + canMotor.getFirmwareVersion());

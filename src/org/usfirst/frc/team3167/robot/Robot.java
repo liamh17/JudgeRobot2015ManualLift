@@ -8,11 +8,13 @@ import org.usfirst.frc.team3167.drive.Wheel;
 import org.usfirst.frc.team3167.util.Conversions;
 import org.usfirst.frc.team3167.util.DigitalSwitch;
 import org.usfirst.frc.team3167.util.JoystickButton;
+import org.usfirst.frc.team3167.util.SecondOrderFilter;
 
 import edu.wpi.first.wpilibj.CANJaguar;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.Preferences;
+import edu.wpi.first.wpilibj.RobotDrive;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
@@ -27,62 +29,53 @@ public class Robot extends IterativeRobot
 	private HolonomicRobotDrive drive;
 	private Lift narrowLift = new Lift(RobotConfiguration.narrowToteLiftMotorID,
 			new DigitalSwitch(RobotConfiguration.narrowToteHomeChannel, true),
-			RobotConfiguration.narrowHomeSwitchHeight, RobotConfiguration.sprocketPitchCircumference);
+			RobotConfiguration.narrowHomeSwitchHeight, RobotConfiguration.sprocketPitchCircumference, false);
 	private Lift wideLift = new Lift(RobotConfiguration.wideToteLiftMotorID,
 			new DigitalSwitch(RobotConfiguration.wideToteHomeChannel, true),
-			RobotConfiguration.wideHomeSwitchHeight, RobotConfiguration.sprocketPitchCircumference);
+			RobotConfiguration.wideHomeSwitchHeight, RobotConfiguration.sprocketPitchCircumference, true);
 	
 	// TODO:  Add cameras and trackers
 	private TaskManager taskManager = new TaskManager();
-	private Joystick driveJoystick = new Joystick(1);
+	private Joystick driveJoystick1 = new Joystick(1);
+	private Joystick driveJoystick0 = new Joystick(0);
 	
-	private double testSig = 0.0;
+	//private RobotDrive drive;
 	
-	private CANJaguar jag;
 	Preferences prefs = Preferences.getInstance();
-
+	
     /**
      * This function is run when the robot is first started up and should be
      * used for any initialization code.
      */
     public void robotInit() 
     {
-    	testSig = prefs.getDouble("testSig", 0.0);
+    	//filter = new SecondOrderFilter(prefs.getDouble("cutoff", 3.0), prefs.getDouble("damp", 0.0), RobotConfiguration.frequency);
+    	//testSig = prefs.getDouble("testSig", 0.0);
     	//prefs.putDouble("Kp", 1.0);
     	//prefs.putDouble("Ki", 0.0);
-    	//BuildRobotDrive();
+    	BuildRobotDrive();
     	// TODO:  Create all the stuff herej
-    	jag = new CANJaguar(6);
-    	jag.setPercentMode(CANJaguar.kQuadEncoder, 360);
     }
     
     private void DoCommonUpdates()
     {
-    	//updateSmartDashboard();
-    	jag.set(0.4);
-    	/*taskManager.DoCurrentTask();
+    	updateSmartDashboard();
+    	taskManager.DoCurrentTask();
     	if (taskManager.OkToDrive())
     	{
     		try
-    		{
-    			drive.Drive(0.0, testSig, 0.0);
-    		}
-    		catch (Exception ex)
-    		{
-    			System.out.println("Failed to drive: " + ex.getMessage());
-    		}
-    	}*/
+	    	{
+	    		drive.Drive(driveJoystick1);
+	    	}
+	    	catch (Exception ex)
+	    	{
+	    		System.out.println("Failed to drive: " + ex.getMessage());
+	    	}
+    		
+    	}
     	
-    	/*System.out.println(narrowLift.getSwitch().IsPressed() +  " " 
-    			+ narrowLift.getSwitch().HasJustBeenPressed());*/
-    	
-    	//narrowLift.GoToPosition(1000.0);
-    	/*narrowLift.Update();
-    	narrowLift.SetCmdPosition(30.0);*/
-    	//System.out.println(wideLift.GetPosition());
-    	//wideLift.Update();
-    	//wideLift.SetCmdPosition(15.0);
-    	//System.out.println("IsPressed(): " + wideLift.getSwitch().IsPressed() + ", HasJustBeenPressed(): " + wideLift.getSwitch().HasJustBeenPressed());
+    	narrowLift.Update();
+    	wideLift.Update();
     	
     	// TODO:  Update all of our common objects
     	// Both target trackers
@@ -94,13 +87,17 @@ public class Robot extends IterativeRobot
     
     public void updateSmartDashboard()
     {
-    	SmartDashboard.putNumber("Left Front Wheel KP", drive.GetWheel(0).getKP());
-    	SmartDashboard.putNumber("Left Front Wheel KI", drive.GetWheel(0).getKI()); 
-    	SmartDashboard.putNumber("Left Front Wheel KD", drive.GetWheel(0).getKD()); 
-    	SmartDashboard.putNumber("testSig", testSig); 
+    	//SmartDashboard.putNumber("Front Right Wheel Angle", drive.GetWheel(1).GetWheelAngle());
+    	//SmartDashboard.putNumber("Rear Left Wheel Angle", drive.GetWheel(2).GetWheelAngle());
+    	//SmartDashboard.putNumber("Rear Right Wheel Angle", drive.GetWheel(3).GetWheelAngle());
     	
-    	SmartDashboard.putNumber("Left Front Wheel speed", drive.GetWheel(0).GetWheelVelocity());
-    	SmartDashboard.putNumber("Left Front Wheel command speed", drive.GetWheel(0).getCANMotor().get() / drive.GetWheel(0).getGearRatio() * Conversions.RPMToRadPerSec);
+    	//SmartDashboard.putNumber("Left Front Wheel KP", drive.GetWheel(0).getKP());
+    	//SmartDashboard.putNumber("Left Front Wheel KI", drive.GetWheel(0).getKI()); 
+    	//SmartDashboard.putNumber("Left Front Wheel KD", drive.GetWheel(0).getKD()); 
+    	//SmartDashboard.putNumber("testSig", testSig); 
+    	
+    	//SmartDashboard.putNumber("Left Front Wheel speed", drive.GetWheel(0).GetWheelVelocity());
+    	//SmartDashboard.putNumber("Left Front Wheel command speed", drive.GetWheel(0).getCANMotor().get() / drive.GetWheel(0).getGearRatio() * Conversions.RPMToRadPerSec);
     }
     
     public void autonomousInit()
@@ -138,7 +135,6 @@ public class Robot extends IterativeRobot
      */
     public void teleopContinuous()
     {
-    	
     }
 
     /**
@@ -147,8 +143,24 @@ public class Robot extends IterativeRobot
     public void teleopPeriodic() 
     {
     	DoCommonUpdates();
-    	// TODO:  Respond to button presses, etc.
-    	// Test code to move lift
+    	System.out.println(wideLift.GetPosition());
+    	
+    	if(driveJoystick1.getRawButton(3))
+    	{
+    		wideLift.GoToPosition(RobotConfiguration.wideHomeSwitchHeight);
+    	}
+    	else if(driveJoystick1.getRawButton(5))
+    	{
+    		wideLift.GoToPosition(RobotConfiguration.widePickupToteHeight); // Pick up a tote by rasing 4 in
+    	}
+    	else if(driveJoystick1.getRawButton(4))
+    	{
+    		wideLift.GoToPosition(RobotConfiguration.wideRaiseToteToStack); // Pick up a tote by rasing 4 in
+    	}
+    	else if(driveJoystick1.getRawButton(6))
+    	{
+    		wideLift.GoToPosition(RobotConfiguration.wideStackingToteOnTote);
+    	}
     }
     
     /**
@@ -166,14 +178,15 @@ public class Robot extends IterativeRobot
     
     public void disabledPeriodic()
     {
-    	/*System.out.println("X = " + driveJoystick.getX());
-    	System.out.println("Y = " + driveJoystick.getY());
-    	System.out.println("Z = " + driveJoystick.getTwist());*/
+    	//updateSmartDashboard();
+    	//drive.PrintTest();
     	// Call test print statements to execute every cycle
     	//System.out.println(GenerateLiftTestString("Narrow", narrowLift));
-    	System.out.println(GenerateLiftTestString("Wide", wideLift));
+    	//System.out.println(GenerateLiftTestString("Wide", wideLift));
     	//System.out.println(drive.GetWheelAngleString());
     	CANJaguar.updateSyncGroup(RobotConfiguration.wheelCANSyncGroup);
+    	System.out.println("X: " + driveJoystick1.getX() + ", Y: " + driveJoystick1.getY() + ", twist: " + driveJoystick1.getTwist());
+
     }
     
     private String GenerateLiftTestString(String name, Lift lift)
@@ -199,31 +212,27 @@ public class Robot extends IterativeRobot
     	double rightWheelAxisX = -leftWheelAxisX;
     	double rollerAngle1 = RobotConfiguration.rollerAngle;
     	double rollerAngle2 = -rollerAngle1;
-    	double gearRatio = 1;// 1 because the encoder rotates with the wheel, not the motor
+    	//double gearRatio = 1;// 1 because the encoder rotates with the wheel, not the motor
     	
     	// Left front
     	drive.AddWheel(new Wheel(-halfTrack, halfWheelbase, leftWheelAxisX, 0, rollerAngle1,
-    			RobotConfiguration.wheelRadius, gearRatio,
-    			maxWheelSpeed, RobotConfiguration.leftFrontMotorID,
-    			prefs.getDouble("Kp", 1.0), prefs.getDouble("Ki", 0.0), RobotConfiguration.leftFrontWheelEncoderPPR));
+    			RobotConfiguration.wheelRadius, 
+    			maxWheelSpeed, RobotConfiguration.leftFrontMotorID));
+    	
     	
     	// Right front
     	drive.AddWheel(new Wheel(halfTrack, halfWheelbase, rightWheelAxisX, 0, rollerAngle2,
-    			RobotConfiguration.wheelRadius, gearRatio,
-    			maxWheelSpeed, RobotConfiguration.rightFrontMotorID, 
-    			/*RobotConfiguration.wheelKp*/ 0.0, RobotConfiguration.wheelKi, RobotConfiguration.rightFrontWheelEncoderPPR));
+    			RobotConfiguration.wheelRadius, maxWheelSpeed, RobotConfiguration.rightFrontMotorID));
     	
     	// Left rear
     	drive.AddWheel(new Wheel(-halfTrack, -halfWheelbase, leftWheelAxisX, 0, rollerAngle2,
-    			RobotConfiguration.wheelRadius, gearRatio,
-    			maxWheelSpeed, RobotConfiguration.leftRearMotorID,
-    			/*RobotConfiguration.wheelKp*/ 0.0, RobotConfiguration.wheelKi, RobotConfiguration.leftBackWheelEncoderPPR));
+    			RobotConfiguration.wheelRadius,
+    			maxWheelSpeed, RobotConfiguration.leftRearMotorID));
     	
     	// Right rear
     	drive.AddWheel(new Wheel(halfTrack, -halfWheelbase, rightWheelAxisX, 0, rollerAngle1,
-    			RobotConfiguration.wheelRadius, gearRatio,
-    			maxWheelSpeed, RobotConfiguration.rightRearMotorID,
-    			/*RobotConfiguration.wheelKp*/ 0.0, RobotConfiguration.wheelKi, RobotConfiguration.rightBackWheelEncoderPPR));
+    			RobotConfiguration.wheelRadius, maxWheelSpeed, RobotConfiguration.rightRearMotorID));
+    	
     	
     	// Add acceleration limits
     	drive.SetFrictionCoefficient(0.7);// Creates acceleration limit

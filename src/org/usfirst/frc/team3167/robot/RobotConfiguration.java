@@ -17,7 +17,7 @@ public class RobotConfiguration
 	public static final double track = 24.0;// [in]
 	public static final double rollerAngle = 45.0;// [deg]
 	
-	public static final double wheelGearboxRatio = 10.0;// [-]
+	public static final double wheelGearboxRatio = 9.0;// [-]
 	public static final double wheelMotorMaxSpeed = 3000.0;// [RPM]
 	
 	// Wheel control
@@ -25,10 +25,10 @@ public class RobotConfiguration
 	public static final double wheelKi = 0.0;
 	
 	public static final int wheelEncoderPPR = 360;
-	public static final int rightFrontWheelEncoderPPR = 333;
-	public static final int rightBackWheelEncoderPPR = 153;
-	public static final int leftFrontWheelEncoderPPR = 348;
-	public static final int leftBackWheelEncoderPPR = 360;
+	public static final int rightFrontWheelEncoderPPR = 65;
+	public static final int rightBackWheelEncoderPPR = 540;
+	public static final int leftFrontWheelEncoderPPR = 310;
+	public static final int leftBackWheelEncoderPPR = 159;
 	
 	// CAN Node IDs
 	public static final int leftFrontMotorID = 5;
@@ -45,8 +45,13 @@ public class RobotConfiguration
 	
 	// Lift geometry
 	public static final double narrowHomeSwitchHeight = 8.5;// [in]
-	public static final double wideHomeSwitchHeight = 5.875;// [in]
+	public static final double wideHomeSwitchHeight = -5.875;// [in]
 	
 	// For size 35 chain, count number of teeth on sprocket and multiply by 0.375
 	public static final double sprocketPitchCircumference = 5.625; // [in]
+
+	public static final double widePickupToteHeight = -9.875; // [in]
+	public static final double wideRaiseToteToStack = -25.0; // [in]
+
+	public static final double wideStackingToteOnTote = -18.0;
 } 

@@ -419,8 +419,8 @@ public class HolonomicRobotDrive
 		// Joystick X axis is left-right, positive right (no change necessary)
 		// Joystick Y axis if fore-aft, positive aft (requires sign change)
 		// Joystick twist is positive nose right (requires sign change)
-        Drive(ApplyDeadband(-stick.getY()) * vYMax,
-        	  ApplyDeadband(stick.getX()) * vXMax,
+        Drive(ApplyDeadband(stick.getX()) * vXMax,
+        	  ApplyDeadband(-stick.getY()) * vYMax,
         	  ApplyDeadband(-stick.getTwist() * omegaMax));
     }
 
