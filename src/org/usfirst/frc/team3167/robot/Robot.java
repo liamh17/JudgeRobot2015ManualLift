@@ -44,6 +44,7 @@ public class Robot extends IterativeRobot
 	private Joystick driveJoystick0 = new Joystick(0);
 	
 	//private RobotDrive drive;
+	private boolean slideLock = false;
 	  
 	Preferences prefs = Preferences.getInstance();
 	
@@ -80,7 +81,7 @@ public class Robot extends IterativeRobot
     		{
 	    		try
 		    	{
-		    		drive.Drive(driveJoystick1, true);
+		    		drive.Drive(driveJoystick1, true, slideLock);
 		    	}
 		    	catch (Exception ex)
 		    	{
@@ -91,7 +92,7 @@ public class Robot extends IterativeRobot
     		{
     			try
 		    	{
-		    		drive.DriveXBOX(driveJoystick0);
+		    		drive.Drive(driveJoystick0, false, slideLock);
 		    	}
 		    	catch (Exception ex)
 		    	{
@@ -170,7 +171,6 @@ public class Robot extends IterativeRobot
     public void teleopPeriodic() 
     {
     	DoCommonUpdates();
-    	System.out.println(narrowLift.GetPosition());
     	
     	if(driveJoystick1.getRawButton(3))
     	{
@@ -193,7 +193,18 @@ public class Robot extends IterativeRobot
     		driver = Driver.WIDE_DRIVER;
     	}
     	
-    	if(driveJoystick0.getRawButton(1))
+    	// Enable a slide lock for sliding without turning
+    	if(driveJoystick1.getRawButton(2) && driver == Driver.WIDE_DRIVER)
+    	{
+    		slideLock = true;
+    	}
+    	else if(driver == Driver.WIDE_DRIVER)
+    	{
+    		slideLock = false;
+    	}
+    	
+    	// XBOX controller
+    	/*if(driveJoystick0.getRawButton(1))
     	{
     		narrowLift.GoToPosition(RobotConfiguration.narrowHomeSwitchHeight);
     	}
@@ -212,6 +223,37 @@ public class Robot extends IterativeRobot
     	else if(driveJoystick0.getRawButton(8))
     	{
     		driver = Driver.NARROW_DRIVER;
+    	}*/
+    	
+    	if(driveJoystick0.getRawButton(3))
+    	{
+    		narrowLift.GoToPosition(RobotConfiguration.narrowHomeSwitchHeight);
+    	}
+    	else if(driveJoystick0.getRawButton(5))
+    	{
+    		narrowLift.GoToPosition(RobotConfiguration.narrowPickupToteHeight); // Pick up a tote by rasing 4 in
+    	}
+    	else if(driveJoystick0.getRawButton(4))
+    	{
+    		narrowLift.GoToPosition(RobotConfiguration.narrowRaiseToteToStack); // Pick up a tote by rasing 4 in
+    	}
+    	else if(driveJoystick0.getRawButton(6))
+    	{
+    		narrowLift.GoToPosition(RobotConfiguration.narrowStackingToteOnTote);
+    	}
+    	else if(driveJoystick0.getRawButton(1))
+    	{
+    		driver = Driver.NARROW_DRIVER;
+    	}
+    	
+    	// Enable a slide lock for sliding without turning
+    	if(driveJoystick0.getRawButton(2) && driver == Driver.NARROW_DRIVER)
+    	{
+    		slideLock = true;
+    	}
+    	else if(driver == Driver.NARROW_DRIVER)
+    	{
+    		slideLock = false;
     	}
     }
     

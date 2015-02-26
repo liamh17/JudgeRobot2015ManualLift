@@ -412,9 +412,19 @@ public class HolonomicRobotDrive
 	 * be read
      * @throws Exception 
 	 */
-    public void Drive(Joystick stick, boolean invert)
+    public void Drive(Joystick stick, boolean invert, boolean slideLock)
             throws Exception
     {
+    	double slideScale = 1.0;
+    	if(slideLock)
+    	{
+    		slideScale = 0.0;
+    	}
+    	else
+    	{
+    		slideScale = 1.0;
+    	}
+    	
     	double scale = 1.0;
     	if(invert) scale = -1.0; 
         // Call the normal drive method with the joystick values
@@ -422,8 +432,8 @@ public class HolonomicRobotDrive
 		// Joystick Y axis if fore-aft, positive aft (requires sign change)
 		// Joystick twist is positive nose right (requires sign change)
         Drive(ApplyDeadband(scale * stick.getX()) * vXMax,
-        	  ApplyDeadband(-scale * stick.getY()) * vYMax,
-        	  ApplyDeadband(-stick.getTwist() * omegaMax));
+        	  ApplyDeadband(-scale * slideScale * stick.getY()) * vYMax,
+        	  ApplyDeadband(-stick.getTwist() * slideScale * omegaMax));
     }
     
     public void DriveXBOX(Joystick xbox) throws Exception
