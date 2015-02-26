@@ -25,7 +25,9 @@ import org.opencv.features2d.FeatureDetector;
 import org.opencv.features2d.Features2d;
 import org.opencv.features2d.KeyPoint;
 import org.opencv.highgui.Highgui;
+import org.opencv.highgui.VideoCapture;
 import org.usfirst.frc.team3167.drive.RobotKinematics;
+import org.opencv.video.Video;
 
 import edu.wpi.first.wpilibj.image.ColorImage;
 import edu.wpi.first.wpilibj.image.HSLImage;
@@ -49,7 +51,8 @@ public class LogoTracker extends Tracker
 {
 	static
 	{
-		System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
+		//System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
+		System.load("/usr/local/lib/lib_OpenCV/java/lib" + Core.NATIVE_LIBRARY_NAME + ".so");
 	}
 	
 	private AxisCamera camera; 				 	 // Camera that is on the forklift side of the robot
@@ -71,6 +74,8 @@ public class LogoTracker extends Tracker
 	
 	private static Mat cameraMatrix;
 	private static MatOfDouble dist;
+	
+	private VideoCapture vc;
 
 	/**
 	 * Create a LogoTracker
@@ -82,7 +87,8 @@ public class LogoTracker extends Tracker
 	{
 		this.camera = camera;													
 		template = Highgui.imread(tempPath, 0);		// Use OpenCV to load the template image
-
+		//System.out.println("Template dimensions: " + template.size());
+		
 		detector = FeatureDetector.create(FeatureDetector.SIFT);	// Create a SIFT detector
 		matcher = DescriptorMatcher.create(DescriptorMatcher.BRUTEFORCE_SL2);	// Match using a bruteforce method
 		extractor = DescriptorExtractor.create(DescriptorExtractor.SIFT);	// Create a SIFT extractor
@@ -91,6 +97,9 @@ public class LogoTracker extends Tracker
 		
 		imageKeypoints = null;				// No keypoints have been found yet
 		matches = new ArrayList<DMatch>();	
+		
+		vc = new VideoCapture();
+		vc.open("http://10.31.67.22/axis-media/media.amp");
 
 		cameraMatrix = new MatOfDouble();
 		cameraMatrix = MatOfDouble.zeros(3, 3, CvType.CV_64F);
@@ -281,12 +290,13 @@ public class LogoTracker extends Tracker
 	 */
 	private Mat getImage() throws NIVisionException
 	{
-				
-		
+		Mat image = new Mat();		
+		vc.grab();
+		vc.retrieve(image);
 		// TODO: Convert the monoimage into an OpenCV mat
 		// Read the image as a Mat using OpenCV
 		//return Highgui.imread("\\home\\lvuser\\image.jpg", 0);
-		return null;
+		return image;
 	}
 	
 	/**

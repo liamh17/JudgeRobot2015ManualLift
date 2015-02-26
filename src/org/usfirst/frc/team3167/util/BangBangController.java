@@ -80,13 +80,13 @@ public class BangBangController
 	 * reversed from the standard convention
 	 */
 	public BangBangController(CANJaguar _canJag, double _tolerance,
-			boolean _reverseCmd)
+			boolean _reverseCmd, int encPPR)
 	{
 		canJag = _canJag;
 		jag = null;
 		relay = null;
 
-		canJag.setPercentMode(CANJaguar.kQuadEncoder, RobotConfiguration.wheelEncoderPPR);
+		canJag.setPercentMode(CANJaguar.kQuadEncoder, encPPR);
 		canJag.enableControl();
 		
 		tolerance = _tolerance;

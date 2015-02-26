@@ -9,6 +9,7 @@ import org.usfirst.frc.team3167.util.Conversions;
 import org.usfirst.frc.team3167.util.DigitalSwitch;
 import org.usfirst.frc.team3167.util.JoystickButton;
 import org.usfirst.frc.team3167.util.SecondOrderFilter;
+import org.usfirst.frc.team3167.vision.LogoTracker;
 
 import edu.wpi.first.wpilibj.CANJaguar;
 import edu.wpi.first.wpilibj.IterativeRobot;
@@ -16,6 +17,7 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.RobotDrive;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.vision.AxisCamera;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -29,10 +31,12 @@ public class Robot extends IterativeRobot
 	private HolonomicRobotDrive drive;
 	private Lift narrowLift = new Lift(RobotConfiguration.narrowToteLiftMotorID,
 			new DigitalSwitch(RobotConfiguration.narrowToteHomeChannel, true),
-			RobotConfiguration.narrowHomeSwitchHeight, RobotConfiguration.sprocketPitchCircumference, false);
+			RobotConfiguration.narrowHomeSwitchHeight, RobotConfiguration.sprocketPitchCircumference, true, 
+			RobotConfiguration.narrowEncoderPPR, RobotConfiguration.narrowLiftTolerance);
 	private Lift wideLift = new Lift(RobotConfiguration.wideToteLiftMotorID,
 			new DigitalSwitch(RobotConfiguration.wideToteHomeChannel, true),
-			RobotConfiguration.wideHomeSwitchHeight, RobotConfiguration.sprocketPitchCircumference, true);
+			RobotConfiguration.wideHomeSwitchHeight, RobotConfiguration.sprocketPitchCircumference, true,
+			RobotConfiguration.wheelEncoderPPR, RobotConfiguration.wideLiftTolerance);
 	
 	// TODO:  Add cameras and trackers
 	private TaskManager taskManager = new TaskManager();
@@ -40,8 +44,16 @@ public class Robot extends IterativeRobot
 	private Joystick driveJoystick0 = new Joystick(0);
 	
 	//private RobotDrive drive;
-	
+	  
 	Preferences prefs = Preferences.getInstance();
+	
+	enum Driver
+	{
+		WIDE_DRIVER,
+		NARROW_DRIVER;
+	}
+	
+	private Driver driver = Driver.WIDE_DRIVER;
 	
     /**
      * This function is run when the robot is first started up and should be
@@ -49,6 +61,7 @@ public class Robot extends IterativeRobot
      */
     public void robotInit() 
     {
+    	SmartDashboard.putString("hello", "hello");
     	//filter = new SecondOrderFilter(prefs.getDouble("cutoff", 3.0), prefs.getDouble("damp", 0.0), RobotConfiguration.frequency);
     	//testSig = prefs.getDouble("testSig", 0.0);
     	//prefs.putDouble("Kp", 1.0);
@@ -63,14 +76,28 @@ public class Robot extends IterativeRobot
     	taskManager.DoCurrentTask();
     	if (taskManager.OkToDrive())
     	{
-    		try
-	    	{
-	    		drive.Drive(driveJoystick1);
-	    	}
-	    	catch (Exception ex)
-	    	{
-	    		System.out.println("Failed to drive: " + ex.getMessage());
-	    	}
+    		if(driver == Driver.WIDE_DRIVER)
+    		{
+	    		try
+		    	{
+		    		drive.Drive(driveJoystick1, true);
+		    	}
+		    	catch (Exception ex)
+		    	{
+		    		System.out.println("Failed to drive: " + ex.getMessage());
+		    	}
+    		}
+    		else if(driver == Driver.NARROW_DRIVER)
+    		{
+    			try
+		    	{
+		    		drive.DriveXBOX(driveJoystick0);
+		    	}
+		    	catch (Exception ex)
+		    	{
+		    		System.out.println("Failed to drive: " + ex.getMessage());
+		    	}
+    		}
     		
     	}
     	
@@ -143,7 +170,7 @@ public class Robot extends IterativeRobot
     public void teleopPeriodic() 
     {
     	DoCommonUpdates();
-    	System.out.println(wideLift.GetPosition());
+    	System.out.println(narrowLift.GetPosition());
     	
     	if(driveJoystick1.getRawButton(3))
     	{
@@ -161,12 +188,16 @@ public class Robot extends IterativeRobot
     	{
     		wideLift.GoToPosition(RobotConfiguration.wideStackingToteOnTote);
     	}
+    	else if(driveJoystick1.getRawButton(1))
+    	{
+    		driver = Driver.WIDE_DRIVER;
+    	}
     	
-    	if(driveJoystick0.getRawButton(3))
+    	if(driveJoystick0.getRawButton(1))
     	{
     		narrowLift.GoToPosition(RobotConfiguration.narrowHomeSwitchHeight);
     	}
-    	else if(driveJoystick0.getRawButton(5))
+    	else if(driveJoystick0.getRawButton(2))
     	{
     		narrowLift.GoToPosition(RobotConfiguration.narrowPickupToteHeight); // Pick up a tote by rasing 4 in
     	}
@@ -174,9 +205,13 @@ public class Robot extends IterativeRobot
     	{
     		narrowLift.GoToPosition(RobotConfiguration.narrowRaiseToteToStack); // Pick up a tote by rasing 4 in
     	}
-    	else if(driveJoystick0.getRawButton(6))
+    	else if(driveJoystick0.getRawButton(3))
     	{
     		narrowLift.GoToPosition(RobotConfiguration.narrowStackingToteOnTote);
+    	}
+    	else if(driveJoystick0.getRawButton(8))
+    	{
+    		driver = Driver.NARROW_DRIVER;
     	}
     }
     
@@ -202,7 +237,7 @@ public class Robot extends IterativeRobot
     	//System.out.println(GenerateLiftTestString("Wide", wideLift));
     	//System.out.println(drive.GetWheelAngleString());
     	CANJaguar.updateSyncGroup(RobotConfiguration.wheelCANSyncGroup);
-    	System.out.println("X: " + driveJoystick1.getX() + ", Y: " + driveJoystick1.getY() + ", twist: " + driveJoystick1.getTwist());
+    	//System.out.println("X: " + driveJoystick1.getX() + ", Y: " + driveJoystick1.getY() + ", twist: " + driveJoystick1.getTwist());
 
     }
     

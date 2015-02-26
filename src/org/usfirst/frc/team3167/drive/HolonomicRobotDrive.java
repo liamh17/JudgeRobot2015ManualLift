@@ -412,16 +412,26 @@ public class HolonomicRobotDrive
 	 * be read
      * @throws Exception 
 	 */
-    public void Drive(Joystick stick)
+    public void Drive(Joystick stick, boolean invert)
             throws Exception
     {
+    	double scale = 1.0;
+    	if(invert) scale = -1.0; 
         // Call the normal drive method with the joystick values
 		// Joystick X axis is left-right, positive right (no change necessary)
 		// Joystick Y axis if fore-aft, positive aft (requires sign change)
 		// Joystick twist is positive nose right (requires sign change)
-        Drive(ApplyDeadband(stick.getX()) * vXMax,
-        	  ApplyDeadband(-stick.getY()) * vYMax,
+        Drive(ApplyDeadband(scale * stick.getX()) * vXMax,
+        	  ApplyDeadband(-scale * stick.getY()) * vYMax,
         	  ApplyDeadband(-stick.getTwist() * omegaMax));
+    }
+    
+    public void DriveXBOX(Joystick xbox) throws Exception
+    {
+    	double scale = 1.0;
+    	Drive(ApplyDeadband(-scale * xbox.getRawAxis(3)) * vXMax,
+          	  ApplyDeadband(-scale * xbox.getRawAxis(2)) * vYMax,
+          	  ApplyDeadband(-xbox.getRawAxis(4) * omegaMax));
     }
 
     /**

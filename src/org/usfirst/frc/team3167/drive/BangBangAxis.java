@@ -81,7 +81,7 @@ public class BangBangAxis
 	
 	public BangBangAxis(CANJaguar canMotor, double normalSpeed, double normalAccel,
 			double homingSpeed, double homingAccel, DigitalSwitch homeSwitch,
-			double positionScale, double homeSwitchPosition, double tolerance, boolean reverse)
+			double positionScale, double homeSwitchPosition, double tolerance, boolean reverse, int encPPR)
 	{
 		this.canMotor = canMotor;
 		this.normalSpeed = normalSpeed;
@@ -93,7 +93,7 @@ public class BangBangAxis
 		this.homeSwitchPosition = homeSwitchPosition;
 		bufferedCmdPosition = homeSwitchPosition;
 		
-		controller = new BangBangController(canMotor, tolerance, reverse);
+		controller = new BangBangController(canMotor, tolerance, reverse, encPPR);
 		controller.SetSpeed(1.0);// Not actually speed, this just says we want to allow maximum command to jag if necessary
 		
 		this.motor = null;

@@ -25,6 +25,7 @@ public class RobotConfiguration
 	public static final double wheelKi = 0.0;
 	
 	public static final int wheelEncoderPPR = 360;
+	public static final int narrowEncoderPPR = 360;
 	public static final int rightFrontWheelEncoderPPR = 65;
 	public static final int rightBackWheelEncoderPPR = 540;
 	public static final int leftFrontWheelEncoderPPR = 310;
@@ -44,7 +45,7 @@ public class RobotConfiguration
 	public static final int wideToteHomeChannel = 8;
 	
 	// Lift geometry
-	public static final double narrowHomeSwitchHeight = 8.5;// [in]
+	public static final double narrowHomeSwitchHeight = -8.5;// [in]
 	public static final double wideHomeSwitchHeight = -5.875;// [in]
 	
 	// For size 35 chain, count number of teeth on sprocket and multiply by 0.375
@@ -54,7 +55,13 @@ public class RobotConfiguration
 	public static final double wideRaiseToteToStack = -25.0; // [in]
 	public static final double wideStackingToteOnTote = -18.0;
 
-	public static final double narrowPickupToteHeight = 9.875;
-	public static final double narrowRaiseToteToStack = 25.0;
-	public static final double narrowStackingToteOnTote = 18.0;
+	public static final double narrowPickupToteHeight = -12.0;
+	public static final double narrowRaiseToteToStack = -25.0;
+	public static final double narrowStackingToteOnTote = -18.0;
+	
+	public static final String templatePath = "/home/lvuser/logo.jpg";
+
+	public static final double wideLiftTolerance = 0.3;
+
+	public static final double narrowLiftTolerance = 0.3;
 } 
