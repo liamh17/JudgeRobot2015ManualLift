@@ -174,7 +174,7 @@ public class BangBangController
 		}
 		else if (canJag != null)
 		{
-			System.out.println("Entered jag control loop");
+			//System.out.println("Entered jag control loop");
 			if(cmd - act > tolerance)
 			{
 				if (reverseCmd)
@@ -183,7 +183,7 @@ public class BangBangController
 				}
 				else
 				{
-					System.out.println("Setting jaguar up");
+					//System.out.println("Setting jaguar up");
 					canJag.set(speed);
 				}
 			}
@@ -195,13 +195,13 @@ public class BangBangController
 				}
 				else
 				{
-					System.out.println("Setting jaguar down");
+					//System.out.println("Setting jaguar down");
 					canJag.set(-speed);
 				}
 			}
 			else
 			{
-				System.out.println("Setting jaguar neutral");
+				//System.out.println("Setting jaguar neutral");
 				canJag.set(0.0);
 			}
 		}

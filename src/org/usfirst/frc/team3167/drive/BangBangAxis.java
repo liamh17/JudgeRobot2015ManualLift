@@ -122,21 +122,25 @@ public class BangBangAxis
 	{
 		double cmdVel = 0.0;
 		//double cmdVel = (cmdPosition - GetPosition()) * RobotConfiguration.frequency;
-		System.out.println("CmdVel: " + cmdVel + ", Position: " + GetPosition());
+		//System.out.println("CmdVel: " + cmdVel + ", Position: " + GetPosition());
 		if (homeState != HomeState.Homed)
 		{
 			switch (homeState)
 			{
 			default:
 			case NotStarted:
-				System.out.println(homeState);
+				//System.out.println(homeState);
 				cmdVel = 0.0;
 				cmdPosition = GetPosition();
 				cmdGenerator = new SecondOrderLimiter(normalSpeed, normalAccel, RobotConfiguration.frequency);
+				if(homeSwitch.IsPressed())
+				{
+					homeState = HomeState.SlowAwayFromSwitch;
+				}
 				homeState = HomeState.FastTowardSwitch;
 				
 			case FastTowardSwitch:
-				System.out.println(homeState);
+				//System.out.println(homeState);
 				cmdVel = -normalStep;
 				if (homeSwitch.IsPressed())
 				{
@@ -146,14 +150,14 @@ public class BangBangAxis
 				break;
 				
 			case SlowAwayFromSwitch:
-				System.out.println(homeState);
+				//System.out.println(homeState);
 				cmdVel = homingStep;
 				if (!homeSwitch.IsPressed())
 					homeState = HomeState.SlowTowardSwitch;
 				break;
 				
 			case SlowTowardSwitch:
-				System.out.println(homeState);
+				//System.out.println(homeState);
 				if (homeSwitch.HasJustBeenPressed())
 				{
 					initPosition = GetPosition();
@@ -176,6 +180,7 @@ public class BangBangAxis
 			//System.out.println("Post-state processing cmdVel: " + cmdVel);	
 			//cmdPosition += cmdVel/RobotConfiguration.frequency;
 			//System.out.println("cmdPosition: " + cmdPosition);
+			
 			if(!controller.inRange())
 			{
 				controller.SetSpeed(1.0);
@@ -188,6 +193,11 @@ public class BangBangAxis
 			}
 		}
 		
+	}
+	
+	public boolean isHomed()
+	{
+		return homeState == HomeState.Homed;
 	}
 	
 	public double GetPosition()
@@ -220,6 +230,10 @@ public class BangBangAxis
 		}
 	}
 
+	public double GetCmdPosition()
+	{
+		return cmdPosition;
+	}
 	
 	public void SetCmdPosition(double cmdPosition)
 	{

@@ -292,9 +292,9 @@ public class HolonomicRobotDrive
             cmdRobotMotion.SetElement(2, 0, 0.0);
 
 			// Print the maximum velocities for debugging purposes
-			/*System.out.println("Max X velocity: " + vXMax);
-			System.out.println("Max Y velocity: " + vYMax);
-			System.out.println("Max Omega velocity: " + omegaMax);*/
+			System.out.println("Max X velocity: " + vXMax + " in/sec");
+			System.out.println("Max Y velocity: " + vYMax + " in/sec");
+			System.out.println("Max Omega velocity: " + omegaMax + " rad/sec");
         }
 
         return initialized;
@@ -415,6 +415,7 @@ public class HolonomicRobotDrive
     public void Drive(Joystick stick, boolean invert, boolean slideLock)
             throws Exception
     {
+    	//System.out.println("Joystick y = " + stick.getY());
     	double slideScale = 1.0;
     	if(slideLock)
     	{

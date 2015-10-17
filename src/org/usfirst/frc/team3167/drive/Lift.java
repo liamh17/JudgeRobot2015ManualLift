@@ -14,11 +14,13 @@ public class Lift extends BangBangAxis
 		
 	private static final double bottom = 0;// [in]
 	private static final double aboveGroundTote = 0;// [in]
+	private double liftTolerance;
 	
 	public Lift(int canID, DigitalSwitch homeSwitch, double homeSwitchPosition, double sprocketPitchCircumference, boolean reverse, int encPPR, double tolerance)
 	{
 		super(new CANJaguar(canID), normalSpeed, normalAccel, homingSpeed, homingAccel, homeSwitch,
 				sprocketPitchCircumference, homeSwitchPosition, tolerance, reverse, encPPR);
+		liftTolerance = tolerance;
 	}
 	
 	public void GoToPosition(double endPosition)
@@ -29,7 +31,7 @@ public class Lift extends BangBangAxis
 	public boolean IsLifted()
 	{
 		// TODO: Return whether or not the tote is off of the ground (i.e. OK to drive)
-		return true;
+		return isHomed() && (Math.abs(GetPosition() - GetCmdPosition()) <= liftTolerance);
 	}
 	
 	public double GetHeight()

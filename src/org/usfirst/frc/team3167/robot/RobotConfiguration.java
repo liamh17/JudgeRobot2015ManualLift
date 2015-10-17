@@ -18,18 +18,23 @@ public class RobotConfiguration
 	public static final double rollerAngle = 45.0;// [deg]
 	
 	public static final double wheelGearboxRatio = 9.0;// [-]
-	public static final double wheelMotorMaxSpeed = 3000.0;// [RPM]
+	public static final double wheelMotorMaxSpeed = 5310.0;// [RPM]
 	
 	// Wheel control
-	public static final double wheelKp = 1.0;
-	public static final double wheelKi = 0.0;
+	public static final double wheelKp = 0.17;
+	public static final double wheelKi = 0.002;
+	
+	public static final int narrowLiftUp = 5;
+	public static final int narrowLiftDown = 3;
+	public static final int wideLiftUp = 6;
+	public static final int wideLiftDown = 4;
 	
 	public static final int wheelEncoderPPR = 360;
 	public static final int narrowEncoderPPR = 360;
-	public static final int rightFrontWheelEncoderPPR = 65;
-	public static final int rightBackWheelEncoderPPR = 540;
-	public static final int leftFrontWheelEncoderPPR = 310;
-	public static final int leftBackWheelEncoderPPR = 159;
+	public static final int rightFrontWheelEncoderPPR = 250;
+	public static final int rightBackWheelEncoderPPR = 250;
+	public static final int leftFrontWheelEncoderPPR = 250;
+	public static final int leftBackWheelEncoderPPR = 250;
 	
 	// CAN Node IDs
 	public static final int leftFrontMotorID = 5;
@@ -44,6 +49,42 @@ public class RobotConfiguration
 	public static final int narrowToteHomeChannel = 9;
 	public static final int wideToteHomeChannel = 8;
 	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	// Lift geometry
 	public static final double narrowHomeSwitchHeight = -8.5;// [in]
 	public static final double wideHomeSwitchHeight = -5.875;// [in]
@@ -51,9 +92,11 @@ public class RobotConfiguration
 	// For size 35 chain, count number of teeth on sprocket and multiply by 0.375
 	public static final double sprocketPitchCircumference = 5.625; // [in]
 
-	public static final double widePickupToteHeight = -9.875; // [in]
+	public static final double widePickupToteHeight = -8.54; // [in]
 	public static final double wideRaiseToteToStack = -25.0; // [in]
 	public static final double wideStackingToteOnTote = -18.0;
+	public static final double wideStackingOnToteAndStep = -38.0;
+	public static final double wideLoweringToteOnToteOnStep = -36.0;
 
 	public static final double narrowPickupToteHeight = -12.0;
 	public static final double narrowRaiseToteToStack = -25.0;
