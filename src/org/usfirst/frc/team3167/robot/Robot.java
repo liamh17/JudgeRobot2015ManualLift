@@ -212,49 +212,7 @@ public class Robot extends IterativeRobot
     public void teleopPeriodic() 
     {    	
     	DoCommonUpdates();
-    	
-    	/*if(driveJoystick1.getRawButton(1))
-    	{
-    		wideLift.GoToPosition(RobotConfiguration.wideHomeSwitchHeight);
-    	}
-    	else if(driveJoystick1.getRawButton(11))
-    	{
-    		wideLift.GoToPosition(RobotConfiguration.widePickupToteHeight); // Pick up a tote by rasing 4 in
-    	}
-    	else if(driveJoystick1.getRawButton(4))
-    	{
-    		wideLift.GoToPosition(RobotConfiguration.wideRaiseToteToStack); // Pick up a tote by rasing 4 in
-    	}
-    	else if(driveJoystick1.getRawButton(6))
-    	{
-    		wideLift.GoToPosition(RobotConfiguration.wideStackingToteOnTote);
-    	}
-    	else if(driveJoystick1.getRawButton(1))
-    	{
-    		//driver = Driver.WIDE_DRIVER;
-    	}
-    	else if(driveJoystick1.getRawButton(11))
-    	{
-    		wideLift.GoToPosition(RobotConfiguration.wideStackingOnToteAndStep);
-    	}
-    	else if(driveJoystick1.getRawButton(9))
-    	{
-    		wideLift.GoToPosition(RobotConfiguration.wideLoweringToteOnToteOnStep);
-    	}
-    	
-    	if(driveJoystick1.getRawButton(3))
-    	{
-    		speed = -1.0;
-    	}
-    	else if(driveJoystick1.getRawButton(5))
-    	{
-    		speed = 1.0;
-    	}
-    	else
-    	{
-    		speed = 0.0;
-    	} */
-    	
+
         if(driveJoystick1.getRawButton(RobotConfiguration.narrowLiftUp))
         {
         	narrowLift.set(1.0);
@@ -277,7 +235,7 @@ public class Robot extends IterativeRobot
         	double down = -1.0;
         	DigitalInput liam = new DigitalInput(1);
 
-        	if(liam = 1)
+        	if(liam = 1 test)
         	{
         		down = 0.0; 
         	}
