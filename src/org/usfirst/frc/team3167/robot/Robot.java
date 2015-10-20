@@ -2,7 +2,6 @@
 package org.usfirst.frc.team3167.robot;
 
 import org.usfirst.frc.team3167.autonomous.DriveAutoTask;
-
 import org.usfirst.frc.team3167.autonomous.PickupTrashcanTask;
 import org.usfirst.frc.team3167.autonomous.TaskManager;
 import org.usfirst.frc.team3167.drive.HolonomicRobotDrive;
@@ -21,6 +20,7 @@ import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.RobotDrive;
 import edu.wpi.first.wpilibj.Sendable;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.vision.AxisCamera;
 
@@ -50,11 +50,16 @@ public class Robot extends IterativeRobot
 	private Joystick driveJoystick1 = new Joystick(1);
 	//private Joystick driveJoystick0 = new Joystick(0);
 	//private DigitalSwitch homeSwitch = new DigitalSwitch(7, false);
+	private DigitalInput frontLimitSwitch; 
+	private DigitalInput backLimitSwitch;
 	
 	//private RobotDrive drive;
 	private boolean slideLock = false;
 	
 	private double speed = 0.0;
+	
+	private double wait; 
+	private double stop; 
 	  
 	Preferences prefs = Preferences.getInstance();
 	
@@ -210,7 +215,11 @@ public class Robot extends IterativeRobot
      * This function is called periodically during operator control
      */
     public void teleopPeriodic() 
-    {    	
+    {    
+    	frontLimitSwitch = new DigitalInput(1);
+    	backLimitSwitch = new DigitalInput(2); 
+    	stop = 0.0;
+    	wait = 1.0;
     	DoCommonUpdates();
 
         if(driveJoystick1.getRawButton(RobotConfiguration.narrowLiftUp))
@@ -219,7 +228,14 @@ public class Robot extends IterativeRobot
         }
         else if(driveJoystick1.getRawButton(RobotConfiguration.narrowLiftDown))
         {
-        	narrowLift.set(-1.0);
+        	while(true) 
+        	{
+        	if(backLimitSwitch.get()) 
+        	{
+        		wideLift.set(stop); 
+        		Timer.delay(wait);
+        	}
+        	}
         }
         else
         {
@@ -232,14 +248,14 @@ public class Robot extends IterativeRobot
         }
         else if(driveJoystick1.getRawButton(RobotConfiguration.wideLiftDown))
         {
-        	double down = -1.0;
-        	DigitalInput liam = new DigitalInput(1);
-
-        	if(liam = 1 test)
+        	while(true) 
         	{
-        		down = 0.0; 
+        	if(frontLimitSwitch.get()) 
+        	{
+        		wideLift.set(stop); 
+        		Timer.delay(wait);
         	}
-        	wideLift.set(down);
+        	}
         }
         else
         {
